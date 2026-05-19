@@ -42,6 +42,10 @@ public class MembershipRenewal {
      */
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member = null;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "membership_id", nullable = false)
     private Membership membership = null;
 

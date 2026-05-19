@@ -3,6 +3,7 @@ package com.jetbrains.gymusserverjava.memberships.impl;
 import com.jetbrains.gymusserverjava.auth.repositories.UserRepository;
 import com.jetbrains.gymusserverjava.memberships.MembershipService;
 import com.jetbrains.gymusserverjava.memberships.dtos.requests.RegisterMemberRequestDto;
+import com.jetbrains.gymusserverjava.memberships.dtos.requests.UpdateMemberRequestDto;
 import com.jetbrains.gymusserverjava.memberships.dtos.responses.MemberCardResponseDto;
 import com.jetbrains.gymusserverjava.memberships.dtos.responses.MemberResponseDto;
 import com.jetbrains.gymusserverjava.memberships.entities.MemberAttendance;
@@ -168,12 +169,16 @@ public class MembershipServiceImpl implements MembershipService {
         // register the renewal in renewal memberships table
         var membershipRenewal = new MembershipRenewal();
 
+        var member = memberRepository.findById(memberId)
+                                     .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
+                                             "member not found"));
 
         // // TODO: get the user from the user logged in later
         var user = userRepository.findOneByUsername("benianus")
                                  .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                          "user not found"));
 
+        membershipRenewal.setMember(member);
         membershipRenewal.setUser(user);
 
         membershipRenewalRepository.save(membershipRenewal);
@@ -191,6 +196,24 @@ public class MembershipServiceImpl implements MembershipService {
         return memberCardRepository.findMemberCard(memberId)
                                    .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                            "memberCard not found"));
+    }
+
+    @Override public void deleteMember(int memberId) {
+        var member = memberRepository.findById(memberId)
+                                     .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
+                                             "member not found"));
+
+        memberRepository.delete(member);
+    }
+
+    @Override
+    public void updateMember(int memberId, UpdateMemberRequestDto updateMemberRequestDto) {
+        var member = memberRepository.findById(memberId)
+                                     .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
+                                             "member not found"));
+
+        // set the information that you want to update
+        memberRepository.save(member);
     }
 
 }

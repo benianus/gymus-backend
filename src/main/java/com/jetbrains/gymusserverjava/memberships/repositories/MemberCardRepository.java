@@ -19,12 +19,13 @@ public interface MemberCardRepository extends JpaRepository<MemberCard, Integer>
                            m.lastName,
                            m.birthdate,
                            mc.joinDate,
+                           ms.startDate,
                            ms.endDate,
                            md.personalPhoto
                     from Member m
-                            join MemberCard mc on mc.member = m
-                            join Membership ms on ms.member = m
-                            join MemberDocument md on ms.member = m
+                            join MemberCard mc on mc.member.id = m.id
+                            join Membership ms on ms.member.id = m.id
+                            join MemberDocument md on ms.member.id = m.id
                     where mc.member.id = :memberId
                     """
     )

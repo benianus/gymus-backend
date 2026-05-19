@@ -8,6 +8,7 @@ public record MemberCardResponseDto(
         String lastName,
         LocalDate birthdate,
         LocalDate joinDate,
+        LocalDate startDate,
         LocalDate endDate,
         String personalPhoto
 ) {

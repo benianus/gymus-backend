@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,7 +26,7 @@ public class MemberCard {
     private int id = 0;
 
     @Column(name = "join_date", nullable = false, columnDefinition = "date default current_date")
-    private LocalDateTime joinDate = LocalDateTime.now();
+    private LocalDate joinDate = LocalDate.now();
 
     @CreationTimestamp
     @Column(name = "created_at", columnDefinition = "timestamp(2) default current_timestamp(2)")

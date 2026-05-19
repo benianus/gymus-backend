@@ -1,6 +1,7 @@
 package com.jetbrains.gymusserverjava.memberships;
 
 import com.jetbrains.gymusserverjava.memberships.dtos.requests.RegisterMemberRequestDto;
+import com.jetbrains.gymusserverjava.memberships.dtos.requests.UpdateMemberRequestDto;
 import com.jetbrains.gymusserverjava.memberships.dtos.responses.MemberCardResponseDto;
 import com.jetbrains.gymusserverjava.memberships.dtos.responses.MemberResponseDto;
 import com.jetbrains.shared.dtos.ApiResponse;
@@ -69,13 +70,17 @@ public class MembershipController {
     }
 
     @PutMapping("members/{memberId}")
-    public ResponseEntity<ApiResponse<?>> updateMember(@PathVariable int memberId) {
+    public ResponseEntity<ApiResponse<?>> updateMember(
+            @PathVariable int memberId, @RequestBody
+            UpdateMemberRequestDto updateMemberRequestDto
+    ) {
         return null;
     }
 
     @DeleteMapping("members/{memberId}")
-    public ResponseEntity<ApiResponse<?>> deleteMember(@PathVariable int memberId) {
-        return null;
+    public ResponseEntity<ApiResponse<Void>> deleteMember(@PathVariable int memberId) {
+        membershipService.deleteMember(memberId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }
