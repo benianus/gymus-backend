@@ -1,14 +1,13 @@
 package com.jetbrains.gymusserverjava.sessions;
 
+import com.jetbrains.gymusserverjava.sessions.dtos.requests.RegisterSessionRequestDto;
 import com.jetbrains.gymusserverjava.sessions.dtos.responses.SessionResponseDto;
-import com.jetbrains.gymusserverjava.sessions.entities.Session;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface SessionService {
 
-    List<SessionResponseDto> findAllSessions();
+    Page<SessionResponseDto> findAllSessions(int pageNumber, int pageSize);
 
-    void registerSession(Session session);
+    void registerSession(RegisterSessionRequestDto session);
 
 }

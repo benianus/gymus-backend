@@ -6,6 +6,7 @@ import com.jetbrains.gymusserverjava.memberships.dtos.responses.MemberCardRespon
 import com.jetbrains.gymusserverjava.memberships.dtos.responses.MemberResponseDto;
 import com.jetbrains.shared.dtos.ApiResponse;
 import com.jetbrains.shared.dtos.PagedResponse;
+import com.jetbrains.shared.utils.Helpers;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,11 @@ import java.util.List;
 public class MembershipController {
 
     private final MembershipService membershipService;
+    private final Helpers helpers;
 
-    public MembershipController(MembershipService membershipService) {
+    public MembershipController(MembershipService membershipService, Helpers helpers) {
         this.membershipService = membershipService;
+        this.helpers = helpers;
     }
 
     @GetMapping("members")
@@ -30,15 +33,7 @@ public class MembershipController {
     ) {
         var members = membershipService.findAllMembers(pageNumber, pageSize);
 
-        var pagedResponse = new PagedResponse<>(
-                members.getContent(),
-                pageNumber,
-                members.getSize(),
-                members.getTotalElements(),
-                members.getTotalPages(),
-                members.hasNext(),
-                members.hasPrevious()
-        );
+        var pagedResponse = helpers.getPagedResponse(members);
 
         return new ResponseEntity<>(new ApiResponse<>(pagedResponse), HttpStatus.OK);
     }

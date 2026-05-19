@@ -1,5 +1,7 @@
 package com.jetbrains.shared.utils
 
+import com.jetbrains.shared.dtos.PagedResponse
+import org.springframework.data.domain.Page
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
@@ -8,15 +10,40 @@ import java.time.Period
 
 @Component
 object Helpers {
-    fun getUserDetails(): UserDetails {
-        return SecurityContextHolder.getContext().authentication?.let {
+    fun getUserDetails() =
+        SecurityContextHolder.getContext().authentication?.let {
             it.principal as UserDetails?
         } ?: throw IllegalStateException("UserDetails not found")
-    }
 
-    fun calculateAge(birthdate: LocalDate): Int {
-        return Period.between(birthdate, LocalDate.now()).years
-    }
+    fun calculateAge(birthdate: LocalDate) =
+        Period.between(birthdate, LocalDate.now()).years
 
+    fun <T : Any> getPagedResponse(data: Page<T>) =
+        PagedResponse(
+            data = data.content,
+            pageNumber = data.number + 1,
+            pageSize = data.size,
+            totalItems = data.totalElements,
+            totalPages = data.totalPages,
+            hasNext = data.hasNext(),
+            hasPrevious = data.hasPrevious()
+        )
 
+    /***
+     * @NonNull
+     *     private static PagedResponse<List<SessionResponseDto>> getPagedResponse(
+     *             int pageNumber,
+     *             Page<SessionResponseDto> sessions
+     *     ) {
+     *         return new PagedResponse<>(
+     *                 sessions.getContent(),
+     *                 pageNumber,
+     *                 sessions.getSize(),
+     *                 sessions.getTotalElements(),
+     *                 sessions.getTotalPages(),
+     *                 sessions.hasNext(),
+     *                 sessions.hasPrevious()
+     *         );
+     *     }
+     */
 }
