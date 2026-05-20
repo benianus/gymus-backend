@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface MemberAttendanceRepository extends JpaRepository<MemberAttendance, Integer> {
 
@@ -21,5 +23,7 @@ public interface MemberAttendanceRepository extends JpaRepository<MemberAttendan
     boolean isMemberChecked(
             @Param(value = "memberId") int memberId
     );
+
+    List<MemberAttendance> findAllByMemberId(int memberId);
 
 }

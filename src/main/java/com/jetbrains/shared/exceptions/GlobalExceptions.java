@@ -18,11 +18,11 @@ public class GlobalExceptions {
         var errors = List.of(e.getMessage());
         return new ResponseEntity<>(new ApiResponse<>(errors), HttpStatus.BAD_REQUEST);
     }
-    
+
     @ExceptionHandler(CustomExceptionHandler.class)
     public ResponseEntity<ApiResponse<List<String>>> handleCustomException(CustomExceptionHandler e) {
         var errors = List.of(e.getMessage());
-        return new ResponseEntity<>(new ApiResponse<>(errors), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ApiResponse<>(errors), e.code);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
@@ -30,7 +30,7 @@ public class GlobalExceptions {
             UsernameNotFoundException e
     ) {
         var errors = List.of(e.getMessage());
-        return new ResponseEntity<>(new ApiResponse<>(errors), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ApiResponse<>(errors), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -66,8 +66,8 @@ public class MembershipController {
 
     @PutMapping("members/{memberId}")
     public ResponseEntity<ApiResponse<?>> updateMember(
-            @PathVariable int memberId, @RequestBody
-            UpdateMemberRequestDto updateMemberRequestDto
+            @PathVariable int memberId,
+            @RequestBody @Valid UpdateMemberRequestDto updateMemberRequestDto
     ) {
         return null;
     }

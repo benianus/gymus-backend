@@ -31,4 +31,6 @@ public interface MemberCardRepository extends JpaRepository<MemberCard, Integer>
     )
     Optional<MemberCardResponseDto> findMemberCard(@Param(value = "memberId") int memberId);
 
+    Optional<MemberCard> findOneByMemberId(int memberId);
+
 }

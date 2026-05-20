@@ -198,11 +198,29 @@ public class MembershipServiceImpl implements MembershipService {
                                            "memberCard not found"));
     }
 
-    @Override public void deleteMember(int memberId) {
+    @Override
+    @Transactional
+    public void deleteMember(int memberId) {
+        var membership = membershipRepository.findOneByMemberId(memberId)
+                                             .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
+                                                     "membership not found"));
+        var memberDocument = memberDocumentRepository.findOneByMemberId(memberId)
+                                                     .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
+                                                             "member document not found"));
+        var memberCard = memberCardRepository.findOneByMemberId(memberId)
+                                             .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
+                                                     "member card not found"));
+        var memberAttendances = memberAttendanceRepository.findAllByMemberId(memberId);
+        var memberRenewals = membershipRenewalRepository.findAllByMemberId(memberId);
         var member = memberRepository.findById(memberId)
                                      .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                              "member not found"));
 
+        membershipRepository.delete(membership);
+        memberCardRepository.delete(memberCard);
+        memberDocumentRepository.delete(memberDocument);
+        memberAttendanceRepository.deleteAll(memberAttendances);
+        membershipRenewalRepository.deleteAll(memberRenewals);
         memberRepository.delete(member);
     }
 

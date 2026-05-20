@@ -9,11 +9,8 @@ import java.util.Optional;
 @Repository
 public interface MembershipRepository extends JpaRepository<Membership, Integer> {
 
-    //    @Query(
-    //            value = """
-    //                    select ms from Membership ms where ms.member.id = :memberId
-    //                    """
-    //    )
     Optional<Membership> findByMemberId(int memberId);
+
+    Optional<Membership> findOneByMemberId(int memberId);
 
 }
