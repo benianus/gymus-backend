@@ -2,6 +2,7 @@ package com.jetbrains.shared.FileStorage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,10 @@ public class FileStorageController {
     @GetMapping("download/{fileName}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
         var resource = fileStorageService.downloadFile(fileName);
-        return ResponseEntity.ok().body(resource);
+        var fileExtension = fileStorageService.getFileExtension(fileName);
+        return ResponseEntity.ok()
+                             .contentType(MediaType.valueOf("image/" + fileExtension))
+                             .body(resource);
     }
 
     @DeleteMapping("{fileName}")

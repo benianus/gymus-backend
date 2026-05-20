@@ -49,4 +49,10 @@ public class GlobalExceptions {
         return new ResponseEntity<>(new ApiResponse<>(errors), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<ApiResponse<List<String>>> handleNullPointerException(NullPointerException e) {
+        var errors = List.of(e.getMessage());
+        return new ResponseEntity<>(new ApiResponse<>(errors), HttpStatus.BAD_REQUEST);
+    }
+
 }
