@@ -2,6 +2,10 @@ spring:
   application:
     name: gymus-server-java
 
+  threads:
+    virtual:
+      enabled: true
+
   datasource:
     url: jdbc:postgresql://localhost:5432/gym_management_system
     username: ${DB_USERNAME}
@@ -39,3 +43,5 @@ servlet:
 
 file:
   upload-dir: uploads
+
+kind: Application

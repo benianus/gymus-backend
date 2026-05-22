@@ -37,14 +37,14 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     private @NonNull String verifyAllowedFileExtension(MultipartFile file) throws Exception {
-        var allowedExtensions = Set.of(".jpg", ".jpeg", ".png", ".gif", ".bmp");
+        var allowedExtensions = Set.of("jpg", "jpeg", "png");
         var fileExtension = getFileExtension(Objects.requireNonNull(file.getOriginalFilename()));
         if(!allowedExtensions.contains(fileExtension)) {
             throw new Exception("File extension not supported");
         }
         return fileExtension;
     }
-
+    
     private void verifyIfDirectoryExistOrCreate() {
         if(Files.notExists(this.rootPath)) {
             try {

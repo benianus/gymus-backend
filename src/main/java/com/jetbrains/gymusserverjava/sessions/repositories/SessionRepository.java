@@ -20,4 +20,27 @@ public interface SessionRepository extends JpaRepository<Session, Integer> {
     )
     Page<SessionResponseDto> findAllSessions(Pageable pageable);
 
+    @Query(
+            value = """
+                    select case when sum(s.sessionType.price) is null then 0
+                                else sum(s.sessionType.price)
+                                end
+                    from Session s
+                    """
+    )
+    double getTotalRevenue();
+
+    @Query(
+            value = """
+                    select case
+                                when sum(s.sessionType.price) is null then 0
+                                else sum(s.sessionType.price)
+                           end
+                    from Session s
+                    where month(s.createdAt) = month(current_date)
+                    and year(s.createdAt) = year(current_date)
+                    """
+    )
+    double getMonthlyRevenue();
+
 }
