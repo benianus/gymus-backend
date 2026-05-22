@@ -43,4 +43,19 @@ public interface SessionRepository extends JpaRepository<Session, Integer> {
     )
     double getMonthlyRevenue();
 
+    @Query(
+            """
+            select count(s.id) from Session s
+            """
+    )
+    int getTotalSales();
+
+    @Query(
+            """
+            select count(s.id) from Session s where month(s.createdAt) = month(current_date)
+                        and year(s.createdAt) = year(current_date)
+            """
+    )
+    int getMonthlySales();
+
 }

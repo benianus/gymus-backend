@@ -64,4 +64,34 @@ public interface MembershipRepository extends JpaRepository<Membership, Integer>
     )
     double getMonthlyActiveRevenue();
 
+    @Query(
+            """
+            select count(m.id) from Membership m
+            """
+    )
+    int getTotalSales();
+
+    @Query(
+            """
+            select count(m.id) from Membership m where month(m.createdAt) = month(current_date)
+                        and year(m.createdAt) = year(current_date)
+            """
+    )
+    int getMonthlySales();
+
+    @Query(
+            """
+            select count(m.id) from Membership m where m.endDate > current_date
+            """
+    )
+    int totalActiveSales();
+
+    @Query(
+            """
+            select count(m.id) from Membership m where month(m.createdAt) = month(current_date)
+                        and year(m.createdAt) = year(current_date) and m.endDate > current_date
+            """
+    )
+    int monthlyActiveSales();
+
 }

@@ -32,4 +32,19 @@ public interface SaleRepository extends JpaRepository<Sale, Integer> {
     )
     double getMonthlyRevenue();
 
+    @Query(
+            """
+            select count(s.id) from Sale s
+            """
+    )
+    int getTotalSales();
+
+    @Query(
+            """
+            select count(s.id) from Sale s where month(s.createdAt) = month(current_date)
+                        and year(s.createdAt) = year(current_date)
+            """
+    )
+    int getMonthlySales();
+
 }

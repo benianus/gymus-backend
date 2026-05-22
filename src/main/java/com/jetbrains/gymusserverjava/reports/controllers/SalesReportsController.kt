@@ -1,6 +1,8 @@
 package com.jetbrains.gymusserverjava.reports.controllers
 
 import com.jetbrains.gymusserverjava.reports.services.SalesReportsService
+import com.jetbrains.shared.dtos.ApiResponse
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -8,54 +10,48 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("api/reports")
 class SalesReportsController(private val reportsService: SalesReportsService) {
-    @GetMapping("")
-    fun totalSales(): Int {
-        return reportsService.totalSales()
-    }
+    @GetMapping("total-sales")
+    fun totalSales(): ResponseEntity<ApiResponse<Int>> =
+        ResponseEntity.ok().body(ApiResponse(reportsService.totalSales()))
 
-    @GetMapping("")
-    fun monthlySales(): Int {
-        TODO("Not yet implemented")
-    }
+    @GetMapping("monthly-sales")
+    fun monthlySales(): ResponseEntity<ApiResponse<Int>> =
+        ResponseEntity.ok().body(ApiResponse(reportsService.monthlySales()))
 
-    @GetMapping("")
-    fun totalStoreSales(): Int {
-        TODO("Not yet implemented")
-    }
+    @GetMapping("total-store-sales")
+    fun totalStoreSales(): ResponseEntity<ApiResponse<Int>> =
+        ResponseEntity.ok().body(ApiResponse(reportsService.totalStoreSales()))
 
-    @GetMapping("")
-    fun monthlyStoreSales(): Int {
-        TODO("Not yet implemented")
-    }
+    @GetMapping("monthly-store-sales")
+    fun monthlyStoreSales(): ResponseEntity<ApiResponse<Int>> =
+        ResponseEntity.ok().body(ApiResponse(reportsService.monthlyStoreSales()))
 
-    @GetMapping("")
-    fun totalSessionsSales(): Int {
-        TODO("Not yet implemented")
-    }
+    @GetMapping("total-sessions-sales")
+    fun totalSessionsSales(): ResponseEntity<ApiResponse<Int>> = ResponseEntity.ok().body(
+        ApiResponse(reportsService.totalSessionsSales())
+    )
 
-    @GetMapping("")
-    fun monthlySessionSales(): Int {
-        TODO("Not yet implemented")
-    }
+    @GetMapping("monthly-sessions-sales")
+    fun monthlySessionSales(): ResponseEntity<ApiResponse<Int>> = ResponseEntity.ok().body(
+        ApiResponse(reportsService.monthlySessionSales())
+    )
 
-    @GetMapping("")
-    fun totalMembershipsSales(): Int {
-        TODO("Not yet implemented")
-    }
+    @GetMapping("total-memberships-sales")
+    fun totalMembershipsSales(): ResponseEntity<ApiResponse<Int>> = ResponseEntity.ok().body(
+        ApiResponse(reportsService.totalMembershipsSales())
+    )
 
-    @GetMapping("")
-    fun monthlyMembershipsSales(): Int {
-        TODO("Not yet implemented")
-    }
+    @GetMapping("monthly-memberships-sales")
+    fun monthlyMembershipsSales(): ResponseEntity<ApiResponse<Int>> = ResponseEntity.ok().body(
+        ApiResponse(reportsService.monthlyMembershipsSales())
+    )
 
-    @GetMapping("")
-    fun totalActiveMembershipsSales(): Int {
-        TODO("Not yet implemented")
-    }
+    @GetMapping("total-active-memberships-sales")
+    fun totalActiveMembershipsSales(): ResponseEntity<ApiResponse<Int>> =
+        ResponseEntity.ok().body(ApiResponse(reportsService.totalActiveMembershipsSales()))
 
-    @GetMapping("")
-    fun monthlyActiveMembershipsSales(): Int {
-        TODO("Not yet implemented")
-    }
+    @GetMapping("monthly-active-memberships-sales")
+    fun monthlyActiveMembershipsSales(): ResponseEntity<ApiResponse<Int>> =
+        ResponseEntity.ok().body(ApiResponse(reportsService.monthlyActiveMembershipsSales()))
 
 }
