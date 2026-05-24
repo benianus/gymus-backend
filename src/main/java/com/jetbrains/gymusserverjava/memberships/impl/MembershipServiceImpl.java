@@ -197,9 +197,11 @@ public class MembershipServiceImpl implements MembershipService {
     @Override
     @PreAuthorize("@securityUtils.isMemberOwner(#memberId)")
     public MemberCardResponseDto findMemberCard(int memberId) {
-        return memberCardRepository.findMemberCard(memberId)
-                                   .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
-                                           "memberCard not found"));
+        var memberCard = memberCardRepository.findMemberCard(memberId)
+                                             .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
+                                                     "memberCard not found"));
+        IO.println("memberCard: " + memberCard);
+        return memberCard;
     }
 
     @Override

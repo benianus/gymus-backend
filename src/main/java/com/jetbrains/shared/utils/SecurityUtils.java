@@ -37,8 +37,6 @@ public class SecurityUtils {
         var member = memberRepository.findById(memberId)
                                      .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                              "member not found"));
-        IO.println("member: " + member.getUser());
-        IO.println("user: " + user.getId());
         return user.getId() == member.getUser();
 
     }
@@ -57,8 +55,6 @@ public class SecurityUtils {
         var product = productRepository.findById(productId)
                                        .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                                "product not found"));
-
-        IO.println(user.getId() == product.getUser());
         return user.getId() == product.getUser();
     }
 
