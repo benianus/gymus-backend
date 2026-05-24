@@ -65,7 +65,7 @@ public class Member {
         return Helpers.INSTANCE.calculateAge(birthdate);
     }
 
-    public int getUserId() {
+    public int getUser() {
         return user.getId();
     }
 

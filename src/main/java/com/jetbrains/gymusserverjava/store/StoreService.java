@@ -10,13 +10,13 @@ public interface StoreService {
 
     Page<ProductResponseDto> findAll(int pageNumber, int pageSize);
 
-    ProductResponseDto findById(int id);
+    ProductResponseDto findById(int productId);
 
     void save(CreateProductRequestDto requestDto);
 
     void update(UpdateProductRequestDto requestDto, int productId);
 
-    void delete(int id);
+    void delete(int productId);
 
     void registerSale(RegisterSaleRequestDto requestDto, int productId);
 

@@ -10,10 +10,11 @@ import com.jetbrains.gymusserverjava.store.dtos.responses.ProductResponseDto;
 import com.jetbrains.gymusserverjava.store.repositories.ProductRepository;
 import com.jetbrains.gymusserverjava.store.repositories.SaleRepository;
 import com.jetbrains.shared.exceptions.CustomExceptionHandler;
+import com.jetbrains.shared.utils.Helpers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,10 +31,10 @@ public class StoreServiceImpl implements StoreService {
     private StoreMapper storeMapper;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private Helpers helpers;
 
     @Override public Page<ProductResponseDto> findAll(int pageNumber, int pageSize) {
         var pageable = PageRequest.of(pageNumber - 1, pageSize);
@@ -42,8 +43,9 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public ProductResponseDto findById(int id) {
-        var product = productRepository.findById(id)
+    @PreAuthorize("@securityUtils.isProductOwner(#productId)")
+    public ProductResponseDto findById(int productId) {
+        var product = productRepository.findById(productId)
                                        .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                                "product not found"));
         return storeMapper.productToDto(product);
@@ -52,8 +54,8 @@ public class StoreServiceImpl implements StoreService {
     @Override
     @Transactional
     public void save(CreateProductRequestDto requestDto) {
-        // TODO: 20/05/2026 get the user from security context later
-        var user = userRepository.findOneByUsername("benianus")
+        var username = helpers.getUserDetails().getUsername();
+        var user = userRepository.findByUsername(username)
                                  .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                          "user not found"));
         productRepository.save(storeMapper.dtoToEntity(requestDto, user));
@@ -61,16 +63,20 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     @Transactional
+    @PreAuthorize("@securityUtils.isProductOwner(#productId)")
     public void update(UpdateProductRequestDto requestDto, int productId) {
-        // TODO: 20/05/2026 get the user from security context later
-        var user = userRepository.findOneByUsername("benianus")
+        var username = helpers.getUserDetails().getUsername();
+        var user = userRepository.findByUsername(username)
                                  .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                          "user not found"));
         productRepository.save(storeMapper.dtoToEntity(requestDto, user, productId));
     }
 
-    @Override public void delete(int id) {
-        var product = productRepository.findById(id)
+    @Override
+    @Transactional
+    @PreAuthorize("@securityUtils.isProductOwner(#productId)")
+    public void delete(int productId) {
+        var product = productRepository.findById(productId)
                                        .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                                "product not found"));
         productRepository.delete(product);
@@ -78,9 +84,10 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     @Transactional
+    @PreAuthorize("@securityUtils.isProductOwner(#productId)")
     public void registerSale(RegisterSaleRequestDto requestDto, int productId) {
-        // TODO: 20/05/2026 get the user from security context later
-        var user = userRepository.findOneByUsername("benianus")
+        var username = helpers.getUserDetails().getUsername();
+        var user = userRepository.findByUsername(username)
                                  .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                          "user not found"));
         var product = productRepository.findById(productId)

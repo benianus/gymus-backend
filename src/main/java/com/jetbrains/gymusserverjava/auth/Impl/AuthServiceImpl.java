@@ -11,7 +11,6 @@ import com.jetbrains.shared.security.JwtHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,18 +48,16 @@ public class AuthServiceImpl implements AuthService {
                 new UsernamePasswordAuthenticationToken(
                         loginRequestDto.username(),
                         loginRequestDto.password()
-                ));
+                )
+        );
 
-        var userDetails = (UserDetails) authentication.getPrincipal();
-
-        var username = userDetails != null ? userDetails.getUsername() : null;
-        var role = userDetails != null
-                   ? userDetails.getAuthorities()
-                                .stream()
-                                .map(GrantedAuthority::getAuthority)
-                                .findFirst()
-                                .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(""))
-                   : null;
+        var userDetails = userDetailsService.loadUserByUsername(loginRequestDto.username());
+        var username = userDetails.getUsername();
+        var role = userDetails.getAuthorities()
+                              .stream()
+                              .map(GrantedAuthority::getAuthority)
+                              .findFirst()
+                              .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(""));
 
         var extraClaims = new HashMap<String, Object>();
         extraClaims.put("role", role);

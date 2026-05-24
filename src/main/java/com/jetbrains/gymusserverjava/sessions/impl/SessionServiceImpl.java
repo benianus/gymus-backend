@@ -8,32 +8,33 @@ import com.jetbrains.gymusserverjava.sessions.dtos.responses.SessionResponseDto;
 import com.jetbrains.gymusserverjava.sessions.repositories.SessionRepository;
 import com.jetbrains.gymusserverjava.sessions.repositories.SessionTypeRepository;
 import com.jetbrains.shared.exceptions.CustomExceptionHandler;
+import com.jetbrains.shared.utils.Helpers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SessionServiceImpl implements SessionService {
 
-    private final UserDetailsService userDetailsService;
     private final UserRepository userRepository;
     private final SessionRepository sessionRepository;
     private final SessionTypeRepository sessionTypeRepository;
     private final SessionMapper sessionMapper;
+    private final Helpers helpers;
 
     public SessionServiceImpl(
-            UserDetailsService userDetailsService,
             SessionRepository sessionRepository,
             SessionMapper sessionMapper,
             UserRepository userRepository,
-            SessionTypeRepository sessionTypeRepository
+            SessionTypeRepository sessionTypeRepository,
+            Helpers helpers
     ) {
-        this.userDetailsService = userDetailsService;
         this.sessionRepository = sessionRepository;
         this.sessionMapper = sessionMapper;
         this.userRepository = userRepository;
         this.sessionTypeRepository = sessionTypeRepository;
+        this.helpers = helpers;
     }
 
     @Override
@@ -43,9 +44,10 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    @Transactional
     public void registerSession(RegisterSessionRequestDto registerSessionRequestDto) {
-        // TODO: get user from security context later
-        var user = userRepository.findOneByUsername("benianus")
+        var username = helpers.getUserDetails().getUsername();
+        var user = userRepository.findByUsername(username)
                                  .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                          "User not found"));
 

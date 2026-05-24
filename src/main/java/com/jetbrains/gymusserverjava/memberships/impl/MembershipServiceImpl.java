@@ -14,10 +14,11 @@ import com.jetbrains.gymusserverjava.memberships.mappers.MemberMapper;
 import com.jetbrains.gymusserverjava.memberships.mappers.MembershipMapper;
 import com.jetbrains.gymusserverjava.memberships.repositories.*;
 import com.jetbrains.shared.exceptions.CustomExceptionHandler;
+import com.jetbrains.shared.utils.Helpers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,7 +64,7 @@ public class MembershipServiceImpl implements MembershipService {
     private MembershipMapper membershipMapper;
 
     @Autowired
-    private JdbcTemplate db;
+    private Helpers helpers;
 
     /**
      * {@summary if the member is older than 18 check if he attached parental authorization
@@ -82,10 +83,10 @@ public class MembershipServiceImpl implements MembershipService {
         // check if the member is older than 18
         checkMemberAge(dto);
 
-        // TODO: use user details later
-        // var userDetails = Helpers.INSTANCE.getUserDetails();
+        // get logged-in username
 
-        var user = userRepository.findOneByUsername("benianus")
+        var username = helpers.getUserDetails().getUsername();
+        var user = userRepository.findByUsername(username)
                                  .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                          "username not found"
                                  ));
@@ -125,7 +126,7 @@ public class MembershipServiceImpl implements MembershipService {
 
     @Override
     @Transactional
-    //    @PreAuthorize("@securityUtils.isOwner(#memberid)")
+    @PreAuthorize("@securityUtils.isMemberOwner(#memberid)")
     public void recordAttendance(int memberId) {
         var isChecked = memberAttendanceRepository.isMemberChecked(memberId);
 
@@ -138,7 +139,9 @@ public class MembershipServiceImpl implements MembershipService {
                                      .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                              "member not found"));
 
-        var user = userRepository.findOneByUsername("benianus")
+        // get logged-in username
+        var username = helpers.getUserDetails().getUsername();
+        var user = userRepository.findByUsername(username)
                                  .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                          "user not found"));
 
@@ -151,7 +154,7 @@ public class MembershipServiceImpl implements MembershipService {
     }
 
     @Override
-    //    @PreAuthorize("@securityUtils.isOwner(#memberId)")
+    @PreAuthorize("@securityUtils.isMemberOwner(#memberId)")
     public void renewMembership(int memberId) {
         var membershipFounded = membershipRepository.findByMemberId(memberId)
                                                     .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
@@ -173,8 +176,8 @@ public class MembershipServiceImpl implements MembershipService {
                                      .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                              "member not found"));
 
-        // // TODO: get the user from the user logged in later
-        var user = userRepository.findOneByUsername("benianus")
+        var username = helpers.getUserDetails().getUsername();
+        var user = userRepository.findByUsername(username)
                                  .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                          "user not found"));
 
@@ -192,6 +195,7 @@ public class MembershipServiceImpl implements MembershipService {
     }
 
     @Override
+    @PreAuthorize("@securityUtils.isMemberOwner(#memberId)")
     public MemberCardResponseDto findMemberCard(int memberId) {
         return memberCardRepository.findMemberCard(memberId)
                                    .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
@@ -200,6 +204,7 @@ public class MembershipServiceImpl implements MembershipService {
 
     @Override
     @Transactional
+    @PreAuthorize("@securityUtils.isMemberOwner(#memberId)")
     public void deleteMember(int memberId) {
         var membership = membershipRepository.findOneByMemberId(memberId)
                                              .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
@@ -225,6 +230,8 @@ public class MembershipServiceImpl implements MembershipService {
     }
 
     @Override
+    @Transactional
+    @PreAuthorize("@securityUtils.isMemberOwner(#memberId)")
     public void updateMember(int memberId, UpdateMemberRequestDto updateMemberRequestDto) {
         var member = memberRepository.findById(memberId)
                                      .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(

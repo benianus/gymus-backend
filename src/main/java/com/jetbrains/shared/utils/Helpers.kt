@@ -12,7 +12,7 @@ import java.time.Period
 object Helpers {
     fun getUserDetails() =
         SecurityContextHolder.getContext().authentication?.let {
-            it.principal as UserDetails?
+            it.principal as UserDetails
         } ?: throw IllegalStateException("UserDetails not found")
 
     fun calculateAge(birthdate: LocalDate) =
@@ -28,22 +28,4 @@ object Helpers {
             hasNext = data.hasNext(),
             hasPrevious = data.hasPrevious()
         )
-
-    /***
-     * @NonNull
-     *     private static PagedResponse<List<SessionResponseDto>> getPagedResponse(
-     *             int pageNumber,
-     *             Page<SessionResponseDto> sessions
-     *     ) {
-     *         return new PagedResponse<>(
-     *                 sessions.getContent(),
-     *                 pageNumber,
-     *                 sessions.getSize(),
-     *                 sessions.getTotalElements(),
-     *                 sessions.getTotalPages(),
-     *                 sessions.hasNext(),
-     *                 sessions.hasPrevious()
-     *         );
-     *     }
-     */
 }
