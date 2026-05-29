@@ -11,12 +11,15 @@ import java.time.Period
 @Component
 object Helpers {
     fun getUserDetails() =
-        SecurityContextHolder.getContext().authentication?.let {
-            it.principal as UserDetails
-        } ?: throw IllegalStateException("UserDetails not found")
+        SecurityContextHolder.getContext()
+                .authentication
+                ?.let {
+                    it.principal as UserDetails
+                } ?: throw IllegalStateException("UserDetails not found")
 
     fun calculateAge(birthdate: LocalDate) =
-        Period.between(birthdate, LocalDate.now()).years
+        Period.between(birthdate, LocalDate.now())
+                .years
 
     fun <T : Any> getPagedResponse(data: Page<T>) =
         PagedResponse(

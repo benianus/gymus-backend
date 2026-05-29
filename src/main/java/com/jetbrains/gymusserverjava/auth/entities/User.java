@@ -1,8 +1,10 @@
 package com.jetbrains.gymusserverjava.auth.entities;
 
-import com.jetbrains.shared.enums.Role;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.jspecify.annotations.NonNull;
@@ -21,6 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id = 0;
@@ -47,6 +50,7 @@ public class User implements UserDetails {
     public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
     }
+
 }
 
 /**
