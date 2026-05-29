@@ -7,7 +7,7 @@ I already know the gym business model, having trained in it for a while,
 so I decided to digitize it and solve the problem. I’m already done with gathering requirements,
 analyzing them, & create the database design. The next step will be the implementation.
 
-## Main features:
+## Functional Requirements:
 
 ### Users:
 
@@ -71,3 +71,17 @@ analyzing them, & create the database design. The next step will be the implemen
 1. [ ] FromMonthToMonth
 2. [ ] FromDayToDay
 3. [ ] FromYearToYear
+
+## Non-Functional Requirements:
+
+### Security:
+
+1. [ ] HTTPS + CORS
+2. [x] JWT authentication
+3. [x] Role-based authorization
+4. [x] Ownership access policies
+5. [ ] Refresh token & logout
+6. [ ] Rate limiting
+7. [ ] Logging & Auditing 
+
+
