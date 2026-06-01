@@ -14,7 +14,6 @@ import com.jetbrains.gymusserverjava.memberships.mappers.MemberMapper;
 import com.jetbrains.gymusserverjava.memberships.mappers.MembershipMapper;
 import com.jetbrains.gymusserverjava.memberships.repositories.*;
 import com.jetbrains.shared.exceptions.CustomExceptionHandler;
-import com.jetbrains.shared.utils.Helpers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+
+import static com.jetbrains.shared.utils.HelpersKt.getUserDetails;
 
 @Service
 public class MembershipServiceImpl implements MembershipService {
@@ -63,9 +64,6 @@ public class MembershipServiceImpl implements MembershipService {
     @Autowired
     private MembershipMapper membershipMapper;
 
-    @Autowired
-    private Helpers helpers;
-
     /**
      * {@summary if the member is older than 18 check if he attached parental authorization
      * * because the parental auth accept null}
@@ -85,7 +83,7 @@ public class MembershipServiceImpl implements MembershipService {
 
         // get logged-in username
 
-        var username = helpers.getUserDetails().getUsername();
+        var username = getUserDetails().getUsername();
         var user = userRepository.findByUsername(username)
                                  .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                          "username not found"
@@ -140,7 +138,7 @@ public class MembershipServiceImpl implements MembershipService {
                                              "member not found"));
 
         // get logged-in username
-        var username = helpers.getUserDetails().getUsername();
+        var username = getUserDetails().getUsername();
         var user = userRepository.findByUsername(username)
                                  .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                          "user not found"));
@@ -176,7 +174,7 @@ public class MembershipServiceImpl implements MembershipService {
                                      .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                              "member not found"));
 
-        var username = helpers.getUserDetails().getUsername();
+        var username = getUserDetails().getUsername();
         var user = userRepository.findByUsername(username)
                                  .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                          "user not found"));

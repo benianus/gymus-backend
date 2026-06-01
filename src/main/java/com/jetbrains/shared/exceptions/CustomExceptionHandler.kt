@@ -47,5 +47,10 @@ class CustomExceptionHandler(
         fun membershipAlreadyActive(message: String): CustomExceptionHandler {
             return CustomExceptionHandler(message, HttpStatus.CONFLICT)
         }
+
+        @JvmStatic
+        fun fileIsEmptyOrNull(message: String): CustomExceptionHandler {
+            return CustomExceptionHandler(message, HttpStatus.BAD_REQUEST)
+        }
     }
 }

@@ -6,7 +6,6 @@ import com.jetbrains.gymusserverjava.store.dtos.requests.UpdateProductRequestDto
 import com.jetbrains.gymusserverjava.store.dtos.responses.ProductResponseDto;
 import com.jetbrains.shared.dtos.ApiResponse;
 import com.jetbrains.shared.dtos.PagedResponse;
-import com.jetbrains.shared.utils.Helpers;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,15 +14,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.jetbrains.shared.utils.HelpersKt.getPagedResponse;
+
 @RestController
 @RequestMapping("api/products")
 public class StoreController {
 
     @Autowired
     private StoreService storeService;
-
-    @Autowired
-    private Helpers helpers;
 
     @GetMapping
     public ResponseEntity<ApiResponse<PagedResponse<List<ProductResponseDto>>>> findAll(
@@ -32,7 +30,7 @@ public class StoreController {
     ) {
         var products = storeService.findAll(page, pageSize);
 
-        var pagedResponse = helpers.getPagedResponse(products);
+        var pagedResponse = getPagedResponse(products);
 
         return new ResponseEntity<>(new ApiResponse<>(pagedResponse), HttpStatus.OK);
     }

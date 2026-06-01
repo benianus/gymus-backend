@@ -4,7 +4,6 @@ import com.jetbrains.gymusserverjava.sessions.dtos.requests.RegisterSessionReque
 import com.jetbrains.gymusserverjava.sessions.dtos.responses.SessionResponseDto;
 import com.jetbrains.shared.dtos.ApiResponse;
 import com.jetbrains.shared.dtos.PagedResponse;
-import com.jetbrains.shared.utils.Helpers;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,16 +11,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.jetbrains.shared.utils.HelpersKt.getPagedResponse;
+
 @RestController
 @RequestMapping("api/sessions")
 public class SessionController {
 
     private final SessionService sessionService;
-    private final Helpers helpers;
 
-    public SessionController(SessionService sessionService, Helpers helpers) {
+    public SessionController(SessionService sessionService) {
         this.sessionService = sessionService;
-        this.helpers = helpers;
     }
 
     @GetMapping
@@ -31,7 +30,7 @@ public class SessionController {
     ) {
         var sessions = sessionService.findAllSessions(pageNumber, pageSize);
 
-        var pagedResponse = helpers.getPagedResponse(sessions);
+        var pagedResponse = getPagedResponse(sessions);
 
         return new ResponseEntity<>(new ApiResponse<>(pagedResponse), HttpStatus.OK);
     }

@@ -8,11 +8,12 @@ import com.jetbrains.gymusserverjava.sessions.dtos.responses.SessionResponseDto;
 import com.jetbrains.gymusserverjava.sessions.repositories.SessionRepository;
 import com.jetbrains.gymusserverjava.sessions.repositories.SessionTypeRepository;
 import com.jetbrains.shared.exceptions.CustomExceptionHandler;
-import com.jetbrains.shared.utils.Helpers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.jetbrains.shared.utils.HelpersKt.getUserDetails;
 
 @Service
 public class SessionServiceImpl implements SessionService {
@@ -21,20 +22,17 @@ public class SessionServiceImpl implements SessionService {
     private final SessionRepository sessionRepository;
     private final SessionTypeRepository sessionTypeRepository;
     private final SessionMapper sessionMapper;
-    private final Helpers helpers;
 
     public SessionServiceImpl(
             SessionRepository sessionRepository,
             SessionMapper sessionMapper,
             UserRepository userRepository,
-            SessionTypeRepository sessionTypeRepository,
-            Helpers helpers
+            SessionTypeRepository sessionTypeRepository
     ) {
         this.sessionRepository = sessionRepository;
         this.sessionMapper = sessionMapper;
         this.userRepository = userRepository;
         this.sessionTypeRepository = sessionTypeRepository;
-        this.helpers = helpers;
     }
 
     @Override
@@ -46,7 +44,7 @@ public class SessionServiceImpl implements SessionService {
     @Override
     @Transactional
     public void registerSession(RegisterSessionRequestDto registerSessionRequestDto) {
-        var username = helpers.getUserDetails().getUsername();
+        var username = getUserDetails().getUsername();
         var user = userRepository.findByUsername(username)
                                  .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                          "User not found"));

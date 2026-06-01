@@ -74,7 +74,7 @@ analyzing them, & create the database design. The next step will be the implemen
 
 ## Non-Functional Requirements:
 
-### Security:
+#### Security:
 
 1. [ ] HTTPS + CORS
 2. [x] JWT authentication

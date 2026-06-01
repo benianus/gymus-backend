@@ -1,7 +1,6 @@
 package com.jetbrains.gymusserverjava.memberships.entities;
 
 import com.jetbrains.gymusserverjava.auth.entities.User;
-import com.jetbrains.shared.utils.Helpers;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +12,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import static com.jetbrains.shared.utils.HelpersKt.calculateAge;
 
 @Entity
 @Table(name = "members")
@@ -62,7 +63,7 @@ public class Member {
     private User user = null;
 
     public int getAge() {
-        return Helpers.INSTANCE.calculateAge(birthdate);
+        return calculateAge(birthdate);
     }
 
     public int getUser() {
