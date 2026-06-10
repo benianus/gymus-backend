@@ -10,6 +10,7 @@ import com.jetbrains.gymusserverjava.sessions.repositories.SessionTypeRepository
 import com.jetbrains.shared.exceptions.CustomExceptionHandler;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +38,11 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public Page<SessionResponseDto> findAllSessions(int pageNumber, int pageSize) {
-        var pageable = PageRequest.of(pageNumber - 1, pageSize);
+        var pageable = PageRequest.of(
+                pageNumber - 1,
+                pageSize,
+                Sort.by(Sort.Direction.DESC, "id")
+        );
         return sessionRepository.findAllSessions(pageable);
     }
 

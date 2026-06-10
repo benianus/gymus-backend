@@ -13,6 +13,7 @@ import com.jetbrains.shared.exceptions.CustomExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +36,11 @@ public class StoreServiceImpl implements StoreService {
     private UserRepository userRepository;
 
     @Override public Page<ProductResponseDto> findAll(int pageNumber, int pageSize) {
-        var pageable = PageRequest.of(pageNumber - 1, pageSize);
+        var pageable = PageRequest.of(
+                pageNumber - 1,
+                pageSize,
+                Sort.by(Sort.Direction.DESC, "id")
+        );
         var products = productRepository.findAll(pageable);
         return products.map(product -> storeMapper.productToDto(product));
     }

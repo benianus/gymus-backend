@@ -17,6 +17,7 @@ import com.jetbrains.shared.exceptions.CustomExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -188,7 +189,11 @@ public class MembershipServiceImpl implements MembershipService {
     @Override
     public Page<MemberResponseDto> findAllMembers(int pageNumber, int pageSize) {
         var zeroBasedPageNumber = pageNumber - 1;
-        var pageable = PageRequest.of(zeroBasedPageNumber, pageSize);
+        var pageable = PageRequest.of(
+                zeroBasedPageNumber,
+                pageSize,
+                Sort.by(Sort.Direction.DESC, "id")
+        );
         return memberRepository.findAllMembers(pageable);
     }
 

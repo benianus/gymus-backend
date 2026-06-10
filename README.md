@@ -82,6 +82,8 @@ analyzing them, & create the database design. The next step will be the implemen
 4. [x] Ownership access policies
 5. [ ] Refresh token & logout
 6. [ ] Rate limiting
-7. [ ] Logging & Auditing 
+7. [ ] Logging & Auditing
+
+#### Testing:
 
 
