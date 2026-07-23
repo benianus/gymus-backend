@@ -23,13 +23,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @EnableMethodSecurity
 class SecurityConfig(
     private val jwtFilter: JwtFilter,
+    private val rateLimiter: RateLimitingFilter,
     private val userDetailsService: UserDetailsService
 ) {
     @Bean
     @Throws(Exception::class)
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain? =
         http.redirectToHttps { it.disable() }
-            .cors { it.disable() }
+            .cors { it.configurationSource(corsConfigurationSource()) }
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it
@@ -100,15 +101,15 @@ class SecurityConfig(
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
-        val corsConfiguration = CorsConfiguration()
+        val corsConfiguration = CorsConfiguration().apply {
+            allowedOrigins = listOf("*")
+            allowedMethods = listOf("*")
+            allowedHeaders = listOf("*")
+            allowCredentials = true
+        }
 
-        corsConfiguration.allowedOrigins = listOf("*")
-        corsConfiguration.allowedMethods = listOf("*")
-        corsConfiguration.allowedHeaders = listOf("*")
-        corsConfiguration.allowCredentials = true
-
-        val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", corsConfiguration)
-        return source
+        return UrlBasedCorsConfigurationSource().apply {
+            registerCorsConfiguration("/**", corsConfiguration)
+        }
     }
 }

@@ -3,38 +3,40 @@ package com.jetbrains.gymusserverjava.auth;
 import com.jetbrains.gymusserverjava.auth.dtos.requests.LoginRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.resttestclient.TestRestTemplate;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @WebMvcTest(AuthController.class)
 class AuthControllerTest {
-
-    @Autowired
-    TestRestTemplate testRestTemplate;
 
     @MockitoBean
     AuthService authService;
 
+    @Autowired
+    MockMvc mock;
+
     @Test
-    void shouldReturnOkWhenLoginCredentialsAreValid() {
+    void shouldReturnOkWhenLoginCredentialsAreValid() throws Exception {
         // given
         var loginRequest = new LoginRequestDto("benianus", "123456789");
-
+        
         // when
-        var response = testRestTemplate.postForEntity(
-                "/api/auth/login",
-                loginRequest,
-                String.class
-        );
+
+        when(authService.login(any())).thenReturn(any());
 
         // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        mock.perform(post("/api/auth/login")
+                             .contentType(MediaType.APPLICATION_JSON)
+                             .content(loginRequest.toString()))
+            .andExpect(status().isOk());
+
     }
 
 }
