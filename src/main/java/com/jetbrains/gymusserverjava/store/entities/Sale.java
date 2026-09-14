@@ -2,7 +2,10 @@ package com.jetbrains.gymusserverjava.store.entities;
 
 import com.jetbrains.gymusserverjava.auth.entities.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,6 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Sale {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id = 0;
@@ -23,7 +27,11 @@ public class Sale {
     @Column(name = "quantity", nullable = false)
     private int quantity = 0;
 
-    @Column(name = "total_price", nullable = false, columnDefinition = "numeric check ( total_price > 0 )")
+    @Column(
+            name = "total_price",
+            nullable = false,
+            columnDefinition = "numeric check ( total_price > 0 )"
+    )
     private double totalPrice = 0.0d;
 
     @CreationTimestamp
@@ -39,17 +47,18 @@ public class Sale {
      * relationships
      */
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product = null;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "made_by", nullable = false)
     private User user = null;
 
     public int getUser() {
         return user.getId();
     }
+
 }
 
 

@@ -16,17 +16,19 @@ class SecurityUtils(
     private val productRepository: ProductRepository,
 ) {
     fun isMemberOwner(memberId: Int): Boolean {
+        // validate the member id
         isValidId(memberId)
+
+        // get user details from the security context holder
         val userDetails = getUserDetails()
 
         val user = findUser(userDetails)
 
         val member = memberRepository.findById(memberId)
             .orElseThrow { throw resourceNotFound("member not found") }
-
+        
         return user.id == member.user
     }
-
 
     fun isProductOwner(productId: Int): Boolean {
         isValidId(productId)

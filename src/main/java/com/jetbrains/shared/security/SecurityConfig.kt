@@ -94,7 +94,7 @@ class SecurityConfig(
     fun authenticationManager(httpSecurity: HttpSecurity): AuthenticationManager? {
         val authBuilder =
             httpSecurity.getSharedObject(AuthenticationManagerBuilder::class.java)
-        authBuilder.userDetailsService<UserDetailsService?>(userDetailsService)
+        authBuilder.userDetailsService(userDetailsService)
             .passwordEncoder(passwordEncoder())
         return authBuilder.build()
     }

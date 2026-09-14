@@ -52,7 +52,7 @@ public class Product {
      * relationships
      */
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "added_by", nullable = false)
     private User user = null;
 

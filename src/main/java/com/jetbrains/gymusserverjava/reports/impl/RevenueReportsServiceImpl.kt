@@ -1,4 +1,4 @@
-package com.jetbrains.gymusserverjava.reports.implementations
+package com.jetbrains.gymusserverjava.reports.impl
 
 import com.jetbrains.gymusserverjava.memberships.repositories.MembershipRepository
 import com.jetbrains.gymusserverjava.reports.services.RevenueReportsService

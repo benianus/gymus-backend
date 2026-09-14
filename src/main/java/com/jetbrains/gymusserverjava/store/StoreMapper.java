@@ -7,7 +7,7 @@ import com.jetbrains.gymusserverjava.store.dtos.requests.UpdateProductRequestDto
 import com.jetbrains.gymusserverjava.store.dtos.responses.ProductResponseDto;
 import com.jetbrains.gymusserverjava.store.entities.Product;
 import com.jetbrains.gymusserverjava.store.entities.Sale;
-import com.jetbrains.shared.FileStorage.FileStorageService;
+import com.jetbrains.shared.fileStorage.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

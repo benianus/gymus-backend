@@ -1,4 +1,4 @@
-package com.jetbrains.shared.FileStorage
+package com.jetbrains.shared.fileStorage
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 

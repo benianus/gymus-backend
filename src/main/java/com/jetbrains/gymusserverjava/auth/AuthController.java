@@ -1,9 +1,13 @@
 package com.jetbrains.gymusserverjava.auth;
 
 import com.jetbrains.gymusserverjava.auth.dtos.requests.LoginRequestDto;
+import com.jetbrains.gymusserverjava.auth.dtos.requests.LogoutRequestDto;
+import com.jetbrains.gymusserverjava.auth.dtos.requests.RefreshTokenRequestDto;
 import com.jetbrains.gymusserverjava.auth.dtos.requests.RegisterRequestDto;
 import com.jetbrains.gymusserverjava.auth.dtos.responses.AuthResponseDto;
+import com.jetbrains.gymusserverjava.auth.dtos.responses.RefreshTokenResponseDto;
 import com.jetbrains.shared.dtos.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,10 +31,27 @@ public class AuthController {
         return new ResponseEntity<>(new ApiResponse<>(authResponse), HttpStatus.OK);
     }
 
-    @PostMapping("/register")
+    @PostMapping("register")
     ResponseEntity<ApiResponse<AuthResponseDto>> register(@RequestBody RegisterRequestDto request) {
         var authResponse = authService.register(request);
         return new ResponseEntity<>(new ApiResponse<>(authResponse), HttpStatus.CREATED);
+    }
+
+    @PostMapping("refresh")
+    ResponseEntity<ApiResponse<RefreshTokenResponseDto>> refresh(
+            @RequestBody @Valid
+            RefreshTokenRequestDto refreshTokenRequestDto
+    ) {
+        var response = authService.refreshToken(refreshTokenRequestDto);
+        return new ResponseEntity<>(new ApiResponse<>(response), HttpStatus.OK);
+    }
+
+    @PostMapping("logout")
+    ResponseEntity<ApiResponse<String>> logout(
+            @RequestBody @Valid LogoutRequestDto logoutRequestDto
+    ) {
+        authService.logout(logoutRequestDto);
+        return new ResponseEntity<>(new ApiResponse<>("Logout Succeed"), HttpStatus.OK);
     }
 
 }

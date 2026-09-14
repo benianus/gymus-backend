@@ -1,4 +1,4 @@
-package com.jetbrains.shared.FileStorage
+package com.jetbrains.shared.fileStorage
 
 import com.jetbrains.shared.exceptions.CustomExceptionHandler
 import org.springframework.core.io.Resource

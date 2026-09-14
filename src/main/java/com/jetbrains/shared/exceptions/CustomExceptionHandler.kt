@@ -44,13 +44,15 @@ class CustomExceptionHandler(
         }
 
         @JvmStatic
-        fun membershipAlreadyActive(message: String): CustomExceptionHandler {
-            return CustomExceptionHandler(message, HttpStatus.CONFLICT)
-        }
+        fun membershipAlreadyActive(message: String): CustomExceptionHandler =
+            CustomExceptionHandler(message, HttpStatus.CONFLICT)
 
         @JvmStatic
-        fun fileIsEmptyOrNull(message: String): CustomExceptionHandler {
-            return CustomExceptionHandler(message, HttpStatus.BAD_REQUEST)
-        }
+        fun fileIsEmptyOrNull(message: String): CustomExceptionHandler =
+            CustomExceptionHandler(message, HttpStatus.BAD_REQUEST)
+
+        @JvmStatic
+        fun logoutException(message: String): CustomExceptionHandler =
+            CustomExceptionHandler(message, HttpStatus.NO_CONTENT)
     }
 }

@@ -20,9 +20,7 @@ public interface MemberAttendanceRepository extends JpaRepository<MemberAttendan
                                         limit 1
                     """
     )
-    boolean isMemberChecked(
-            @Param(value = "memberId") int memberId
-    );
+    boolean isMemberChecked(@Param(value = "memberId") int memberId);
 
     List<MemberAttendance> findAllByMemberId(int memberId);
 

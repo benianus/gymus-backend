@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -16,9 +17,14 @@ public interface SessionRepository extends JpaRepository<Session, Integer> {
                     select s.id, s.fullName, st.name as sessionTypeName, s.createdAt, s.updatedAt
                     from Session s
                     join SessionType st on s.sessionType.id = st.id
+                    join User u on s.user.id = u.id
+                    where u.username = :username
                     """
     )
-    Page<SessionResponseDto> findAllSessions(Pageable pageable);
+    Page<SessionResponseDto> findAllSessions(
+            Pageable pageable,
+            @Param(value = "username") String username
+    );
 
     @Query(
             value = """

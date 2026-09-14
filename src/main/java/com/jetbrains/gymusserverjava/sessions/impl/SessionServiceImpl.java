@@ -37,13 +37,13 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public Page<SessionResponseDto> findAllSessions(int pageNumber, int pageSize) {
+    public Page<SessionResponseDto> findAllSessions(int pageNumber, int pageSize, String username) {
         var pageable = PageRequest.of(
                 pageNumber - 1,
                 pageSize,
                 Sort.by(Sort.Direction.DESC, "id")
         );
-        return sessionRepository.findAllSessions(pageable);
+        return sessionRepository.findAllSessions(pageable, username);
     }
 
     @Override

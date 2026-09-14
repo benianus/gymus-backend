@@ -70,7 +70,7 @@ public class MembershipServiceImpl implements MembershipService {
      * * because the parental auth accept null}
      */
     private static void checkMemberAge(RegisterMemberRequestDto dto) {
-        if(dto.age() < 18 && dto.parentalAuthorization() == null) {
+        if(dto.age() < 18 && dto.parentalAuthorization == null) {
             throw CustomExceptionHandler.ageExceed(
                     "member should be older than 18 or Parental authorization needed");
         }
@@ -103,7 +103,7 @@ public class MembershipServiceImpl implements MembershipService {
         ));
 
         // membership type
-        var membershipType = membershipTypeRepository.findMembershipTypeByName(dto.membershipType())
+        var membershipType = membershipTypeRepository.findMembershipTypeByName(dto.membershipType)
                                                      .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                                              "membership type not found"
                                                      ));
@@ -187,24 +187,29 @@ public class MembershipServiceImpl implements MembershipService {
     }
 
     @Override
-    public Page<MemberResponseDto> findAllMembers(int pageNumber, int pageSize) {
+    public Page<MemberResponseDto> findAllMembers(
+            int pageNumber,
+            int pageSize,
+            String username
+    ) {
+        // find the members related to this username
+        // note: username have unique constraint in the database
+
         var zeroBasedPageNumber = pageNumber - 1;
         var pageable = PageRequest.of(
                 zeroBasedPageNumber,
                 pageSize,
                 Sort.by(Sort.Direction.DESC, "id")
         );
-        return memberRepository.findAllMembers(pageable);
+        return memberRepository.findAllMembersByUsername(pageable, username);
     }
 
     @Override
     @PreAuthorize("@securityUtils.isMemberOwner(#memberId)")
     public MemberCardResponseDto findMemberCard(int memberId) {
-        var memberCard = memberCardRepository.findMemberCard(memberId)
-                                             .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
-                                                     "memberCard not found"));
-        IO.println("memberCard: " + memberCard);
-        return memberCard;
+        return memberCardRepository.findMemberCard(memberId)
+                                   .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
+                                           "memberCard not found"));
     }
 
     @Override
@@ -242,6 +247,7 @@ public class MembershipServiceImpl implements MembershipService {
                                      .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                              "member not found"));
 
+        var email = updateMemberRequestDto.email;
         // set the information that you want to update
         memberRepository.save(member);
     }

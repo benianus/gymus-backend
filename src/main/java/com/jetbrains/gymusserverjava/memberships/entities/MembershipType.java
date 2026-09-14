@@ -1,7 +1,10 @@
 package com.jetbrains.gymusserverjava.memberships.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,6 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MembershipType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id = 0;
@@ -33,6 +37,7 @@ public class MembershipType {
     @LastModifiedDate
     @Column(name = "updated_at", columnDefinition = "timestamp(2) default current_timestamp(2)")
     private LocalDateTime updatedAt = LocalDateTime.now();
+
 }
 
 

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 import static com.jetbrains.shared.utils.HelpersKt.getPagedResponse;
@@ -26,9 +27,10 @@ public class SessionController {
     @GetMapping
     public ResponseEntity<ApiResponse<PagedResponse<List<SessionResponseDto>>>> getAllSessions(
             @RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
-            @RequestParam(name = "pageSize", required = false, defaultValue = "10") int pageSize
+            @RequestParam(name = "pageSize", required = false, defaultValue = "10") int pageSize,
+            Principal principal
     ) {
-        var sessions = sessionService.findAllSessions(pageNumber, pageSize);
+        var sessions = sessionService.findAllSessions(pageNumber, pageSize, principal.getName());
 
         var pagedResponse = getPagedResponse(sessions);
 

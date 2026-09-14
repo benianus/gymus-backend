@@ -4,7 +4,7 @@ import com.jetbrains.gymusserverjava.auth.entities.User;
 import com.jetbrains.gymusserverjava.memberships.dtos.requests.RegisterMemberRequestDto;
 import com.jetbrains.gymusserverjava.memberships.entities.Member;
 import com.jetbrains.gymusserverjava.memberships.entities.MemberDocument;
-import com.jetbrains.shared.FileStorage.FileStorageService;
+import com.jetbrains.shared.fileStorage.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,10 +22,10 @@ public class MemberDocumentMapper {
     ) {
 
         // upload files
-        var medicalCertificate = fileStorageService.storeFile(dto.medicalCertificate());
-        var birthdateCertificate = fileStorageService.storeFile(dto.birthCertificate());
-        var personalPhoto = fileStorageService.storeFile(dto.personalPhoto());
-        var parentalAuthorization = fileStorageService.storeFile(dto.parentalAuthorization());
+        var medicalCertificate = fileStorageService.storeFile(dto.medicalCertificate);
+        var birthdateCertificate = fileStorageService.storeFile(dto.birthCertificate);
+        var personalPhoto = fileStorageService.storeFile(dto.personalPhoto);
+        var parentalAuthorization = fileStorageService.storeFile(dto.parentalAuthorization);
 
         var entity = new MemberDocument();
 

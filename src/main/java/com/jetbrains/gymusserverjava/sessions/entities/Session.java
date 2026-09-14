@@ -2,7 +2,10 @@ package com.jetbrains.gymusserverjava.sessions.entities;
 
 import com.jetbrains.gymusserverjava.auth.entities.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,6 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Session {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id = 0;
@@ -36,11 +40,11 @@ public class Session {
      * relationships
      */
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "session_type_id", nullable = false)
     private SessionType sessionType = null;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by", nullable = false)
     private User user = null;
 
@@ -51,6 +55,7 @@ public class Session {
     public int getUser() {
         return user.getId();
     }
+
 }
 
 

@@ -3,9 +3,8 @@
 ## Description:
 
 This is a gym management system I’m working on, actually. I already know the gym business model,
-having trained in it for a while, so I decided to digitize it and solve the problem. I’m already
-done with gathering requirements, analyzing them, & create the database design. The next step will
-be the implementation.
+having trained in it for a while, so I decided to digitize it and solve the problem. I gathered
+requirements, analyzed them, & created the database design.
 
 ### Problem:
 
@@ -103,12 +102,6 @@ Every sale should be registered by the employee who is responsible for selling i
 9. [x] Total active memberships revenue
 10. [x] Monthly active memberships revenue
 
-#### Range Statistics:
-
-1. [ ] FromMonthToMonth
-2. [ ] FromDayToDay
-3. [ ] FromYearToYear
-
 ## Non-Functional Requirements:
 
 #### Security:
@@ -118,7 +111,7 @@ Every sale should be registered by the employee who is responsible for selling i
 3. [x] JWT authentication
 4. [x] Role-based authorization
 5. [x] Ownership access policies
-6. [ ] Refresh token & logout
+6. [x] Refresh token & logout
 7. [ ] Rate limiting
 8. [ ] Logging & Auditing
 

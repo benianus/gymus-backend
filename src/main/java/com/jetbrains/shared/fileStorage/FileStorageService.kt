@@ -1,4 +1,4 @@
-package com.jetbrains.shared.FileStorage
+package com.jetbrains.shared.fileStorage
 
 import org.springframework.core.io.Resource
 import org.springframework.web.multipart.MultipartFile

@@ -6,8 +6,8 @@ import org.springframework.data.domain.Page;
 
 public interface SessionService {
 
-    Page<SessionResponseDto> findAllSessions(int pageNumber, int pageSize);
+    Page<SessionResponseDto> findAllSessions(int pageNumber, int pageSize, String username);
 
-    void registerSession(RegisterSessionRequestDto session);
+    void registerSession(RegisterSessionRequestDto registerSessionRequestDto);
 
 }
