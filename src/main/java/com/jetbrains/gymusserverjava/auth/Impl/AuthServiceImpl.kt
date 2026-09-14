@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.util.concurrent.TimeUnit
 import kotlin.jvm.optionals.getOrElse
 
 @Service
@@ -50,10 +51,7 @@ class AuthServiceImpl(
             .map { it.authority }
             .firstOrNull() ?: "OWNER"
 
-        val claims = hashMapOf<String, Any>(
-            "user_id" to user.id,
-            "role" to role
-        )
+        val claims = generateClaims(user, role)
 
         val accessToken = jwtHelper.generateAccessToken(claims, user as UserDetails)
         val refreshToken = jwtHelper.generateRefreshToken(claims, user as UserDetails)
@@ -65,7 +63,7 @@ class AuthServiceImpl(
                 this.refreshToken = refreshToken
                 this.user = user
                 revokedAt = LocalDateTime.now()
-                expiresAt = LocalDateTime.now().plusDays(7)
+                expiresAt = LocalDateTime.now().plusDays(TimeUnit.MILLISECONDS.toDays(expiresIn))
             }
         )
 
@@ -92,14 +90,10 @@ class AuthServiceImpl(
         )
 
         val role = newUser.role
-        val extraClaims = hashMapOf<String, Any>(
-            "user_id" to newUser.id,
-            "role" to role
-        )
+        val claims = generateClaims(newUser, role)
 
-
-        val accessToken = jwtHelper.generateAccessToken(extraClaims, newUser as UserDetails)
-        val refreshToken = jwtHelper.generateRefreshToken(extraClaims, newUser as UserDetails)
+        val accessToken = jwtHelper.generateAccessToken(claims, newUser as UserDetails)
+        val refreshToken = jwtHelper.generateRefreshToken(claims, newUser as UserDetails)
         val expiresIn = jwtHelper.extractExpirationDate(accessToken).time
         val username = newUser.username
 
@@ -109,7 +103,7 @@ class AuthServiceImpl(
                 this.refreshToken = refreshToken
                 user = newUser
                 revokedAt = LocalDateTime.now()
-                expiresAt = LocalDateTime.now().plusDays(7)
+                expiresAt = LocalDateTime.now().plusDays(TimeUnit.MILLISECONDS.toDays(expiresIn))
             }
         )
 
@@ -121,6 +115,7 @@ class AuthServiceImpl(
             expiresIn
         )
     }
+
 
     override fun refreshToken(refreshTokenRequestDto: RefreshTokenRequestDto): RefreshTokenResponseDto {
         val user = userRepository.findByUsername(refreshTokenRequestDto.username).getOrElse {
@@ -134,13 +129,11 @@ class AuthServiceImpl(
 
         val role = user.authorities.map { it.authority }.firstOrNull() ?: "OWNER"
 
-        val claims = hashMapOf<String, Any>(
-            "user_id" to user.id,
-            "role" to role
-        )
+        val claims = generateClaims(user, role)
 
         val accessToken = jwtHelper.generateAccessToken(claims, user as UserDetails)
         val refreshToken = jwtHelper.generateRefreshToken(claims, user as UserDetails)
+        val expiresIn = jwtHelper.extractExpirationDate(refreshToken).time
 
         // save or update new refresh token in the database
         refreshTokenRepository.save(
@@ -148,7 +141,7 @@ class AuthServiceImpl(
                 this.user = user
                 this.refreshToken = refreshToken
                 revokedAt = LocalDateTime.now()
-                expiresAt = LocalDateTime.now().plusDays(7)
+                expiresAt = LocalDateTime.now().plusDays(TimeUnit.MILLISECONDS.toDays(expiresIn))
             }
         )
 
@@ -184,4 +177,13 @@ class AuthServiceImpl(
 
         refreshTokenRepository.save(refreshToken)
     }
+
+    private fun generateClaims(
+        user: User,
+        role: String
+    ): HashMap<String, Any> = hashMapOf(
+        "user_id" to user.id,
+        "role" to role
+    )
+
 }
