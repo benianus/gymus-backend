@@ -55,7 +55,7 @@ public class SessionServiceImpl implements SessionService {
                                          "User not found"));
 
         var sessionType
-                = sessionTypeRepository.findOneByName(registerSessionRequestDto.sessionTypeName())
+                = sessionTypeRepository.findOneByName(registerSessionRequestDto.sessionTypeName)
                                        .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                                "Session Type not found"));
 

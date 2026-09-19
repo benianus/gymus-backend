@@ -34,13 +34,13 @@ public class StoreMapper {
     public Product dtoToEntity(CreateProductRequestDto dto, User user) {
         var product = new Product();
 
-        var imageFile = fileStorageService.storeFile(dto.productImage());
+        var imageFile = fileStorageService.storeFile(dto.productImage);
 
-        product.setProductName(dto.productName());
+        product.setProductName(dto.productName);
         product.setProductImage(imageFile);
-        product.setProductDescription(dto.productDescription());
-        product.setQuantity(dto.quantity());
-        product.setPrice(dto.price());
+        product.setProductDescription(dto.productDescription);
+        product.setQuantity(dto.quantity);
+        product.setPrice(dto.price);
         product.setUser(user);
 
         return product;
@@ -49,14 +49,14 @@ public class StoreMapper {
     public Product dtoToEntity(UpdateProductRequestDto dto, User user, int productId) {
         var product = new Product();
 
-        var imageFile = fileStorageService.storeFile(dto.productImage());
+        var imageFile = fileStorageService.storeFile(dto.productImage);
 
         product.setId(productId);
-        product.setProductName(dto.productName());
+        product.setProductName(dto.productName);
         product.setProductImage(imageFile);
-        product.setProductDescription(dto.productDescription());
-        product.setQuantity(dto.quantity());
-        product.setPrice(dto.price());
+        product.setProductDescription(dto.productDescription);
+        product.setQuantity(dto.quantity);
+        product.setPrice(dto.price);
         product.setUser(user);
 
         return product;
@@ -67,8 +67,8 @@ public class StoreMapper {
 
         sale.setProduct(product);
         sale.setUser(user);
-        sale.setQuantity(dto.quantity());
-        sale.setTotalPrice(dto.totalPrice());
+        sale.setQuantity(dto.quantity);
+        sale.setTotalPrice(dto.totalPrice);
 
         return sale;
     }

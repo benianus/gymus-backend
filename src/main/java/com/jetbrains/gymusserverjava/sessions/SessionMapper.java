@@ -12,7 +12,7 @@ public class SessionMapper {
     public Session toEntity(RegisterSessionRequestDto dto, User user, SessionType sessionType) {
         var session = new Session();
 
-        session.setFullName(dto.fullName());
+        session.setFullName(dto.fullName);
         session.setSessionType(sessionType);
         session.setUser(user);
 
