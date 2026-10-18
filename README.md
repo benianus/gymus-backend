@@ -101,6 +101,7 @@ Every sale should be registered by the employee who is responsible for selling i
 8. [x] Monthly memberships revenue
 9. [x] Total active memberships revenue
 10. [x] Monthly active memberships revenue
+11. [ ] Today's revenue
 
 ## Non-Functional Requirements:
 

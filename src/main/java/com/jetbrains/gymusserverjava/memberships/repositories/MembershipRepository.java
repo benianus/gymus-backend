@@ -84,7 +84,7 @@ public interface MembershipRepository extends JpaRepository<Membership, Integer>
             select count(m.id) from Membership m where m.endDate > current_date
             """
     )
-    int totalActiveSales();
+    int getTotalActiveSales();
 
     @Query(
             """
@@ -92,6 +92,18 @@ public interface MembershipRepository extends JpaRepository<Membership, Integer>
                         and year(m.createdAt) = year(current_date) and m.endDate > current_date
             """
     )
-    int monthlyActiveSales();
+    int getMonthlyActiveSales();
+
+    @Query(
+            """
+            select case
+                 when sum(mt.price) is null then 0
+                 else sum(mt.price)
+                 end as today_revenue from Membership m
+            join MembershipType mt on m.membershipType.id = mt.id
+            where current_date = cast(m.createdAt as date)
+            """
+    )
+    double getTodayRevenue();
 
 }

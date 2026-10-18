@@ -64,4 +64,17 @@ public interface SessionRepository extends JpaRepository<Session, Integer> {
     )
     int getMonthlySales();
 
+    @Query(
+            value = """
+                    select case
+                         when sum(st.price) is null then 0
+                         else sum(st.price)
+                         end as today_revenue
+                    from Session s
+                    join SessionType st on s.sessionType.id = st.id
+                    where current_date = cast(s.createdAt as date)
+                    """
+    )
+    double getTodayRevenue();
+
 }

@@ -47,6 +47,7 @@ class AuthServiceImpl(
             throw CustomExceptionHandler.resourceNotFound("User not found")
         }
 
+
         val role = user.authorities
             .map { it.authority }
             .firstOrNull() ?: "OWNER"
@@ -57,19 +58,60 @@ class AuthServiceImpl(
         val refreshToken = jwtHelper.generateRefreshToken(claims, user as UserDetails)
         val expiresIn = jwtHelper.extractExpirationDate(accessToken).time
 
-        // save refresh token in the database
+        return validateRefreshToken(user, refreshToken, expiresIn, accessToken, role)
+    }
+
+    private fun validateRefreshToken(
+        user: User,
+        refreshToken: String,
+        expiresIn: Long,
+        accessToken: String,
+        role: String
+    ): AuthResponseDto {
+        // find refresh toke by user id
+        val foundedRefreshToken = refreshTokenRepository.findByUserId(user.id).getOrElse {
+            return@getOrElse null
+        }
+
+        if (foundedRefreshToken?.refreshToken == null &&
+            foundedRefreshToken?.revokedAt == null &&
+            foundedRefreshToken?.expiresAt == null
+        ) {
+            // update refresh token in the database if refresh token record exist but not valid
+            val updatedRefreshToken = refreshTokenRepository.save(
+                RefreshToken().apply {
+                    this.id = foundedRefreshToken?.id!!
+                    this.refreshToken = refreshToken
+                    this.user = user
+                    revokedAt = LocalDateTime.now()
+                    expiresAt =
+                        LocalDateTime.now().plusDays(TimeUnit.MILLISECONDS.toDays(expiresIn))
+                }
+            )
+
+            return AuthResponseDto(
+                accessToken,
+                updatedRefreshToken.refreshToken,
+                user.username,
+                role,
+                expiresIn
+            )
+        }
+
+        // save refresh token in the database if the refresh toke record is not exist
         val newRefreshToken = refreshTokenRepository.save(
             RefreshToken().apply {
                 this.refreshToken = refreshToken
                 this.user = user
                 revokedAt = LocalDateTime.now()
-                expiresAt = LocalDateTime.now().plusDays(TimeUnit.MILLISECONDS.toDays(expiresIn))
+                expiresAt =
+                    LocalDateTime.now().plusDays(TimeUnit.MILLISECONDS.toDays(expiresIn))
             }
         )
 
         return AuthResponseDto(
             accessToken,
-            refreshToken,
+            newRefreshToken.refreshToken,
             user.username,
             role,
             expiresIn

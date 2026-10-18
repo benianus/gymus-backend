@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import static com.jetbrains.shared.utils.HelpersKt.getUserDetails;
 
 @Service
+
 public class MembershipServiceImpl implements MembershipService {
 
     @Autowired

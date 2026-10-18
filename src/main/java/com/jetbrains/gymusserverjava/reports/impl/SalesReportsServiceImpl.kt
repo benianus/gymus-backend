@@ -30,7 +30,7 @@ class SalesReportsServiceImpl(
 
     override fun monthlyMembershipsSales(): Int = membershipRepository.monthlySales
 
-    override fun totalActiveMembershipsSales(): Int = membershipRepository.totalActiveSales()
+    override fun totalActiveMembershipsSales(): Int = membershipRepository.totalActiveSales
 
-    override fun monthlyActiveMembershipsSales(): Int = membershipRepository.monthlyActiveSales()
+    override fun monthlyActiveMembershipsSales(): Int = membershipRepository.monthlyActiveSales
 }

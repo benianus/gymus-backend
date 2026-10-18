@@ -47,4 +47,16 @@ public interface SaleRepository extends JpaRepository<Sale, Integer> {
     )
     int getMonthlySales();
 
+    @Query(
+            value = """
+                    select case
+                            when sum(s.totalPrice) is null then 0
+                            else sum(s.totalPrice)
+                            end as today_revenue
+                    from Sale s
+                    where current_date = cast(s.createdAt as date)
+                    """
+    )
+    double getTodayRevenue();
+
 }

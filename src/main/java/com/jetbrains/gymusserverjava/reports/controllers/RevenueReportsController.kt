@@ -49,5 +49,9 @@ class RevenueReportsController(private val revenueReportsService: RevenueReports
     @GetMapping("monthly-active-memberships-revenue")
     fun monthlyActiveMembershipsRevenue(): ResponseEntity<ApiResponse<Double>> =
         ResponseEntity.ok()
-                .body(ApiResponse(revenueReportsService.monthlyActiveMembershipsRevenue()))
+            .body(ApiResponse(revenueReportsService.monthlyActiveMembershipsRevenue()))
+
+    @GetMapping("today-revenue")
+    fun todayRevenue(): ResponseEntity<ApiResponse<Double>> =
+        ResponseEntity.ok().body(ApiResponse(revenueReportsService.todayRevenue()))
 }

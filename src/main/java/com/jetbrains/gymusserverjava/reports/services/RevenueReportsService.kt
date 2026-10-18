@@ -11,4 +11,5 @@ interface RevenueReportsService {
     fun monthlyMembershipsRevenue(): Double
     fun totalActiveMembershipsRevenue(): Double
     fun monthlyActiveMembershipsRevenue(): Double
+    fun todayRevenue(): Double
 }

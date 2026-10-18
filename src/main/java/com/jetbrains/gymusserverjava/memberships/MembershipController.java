@@ -7,6 +7,7 @@ import com.jetbrains.gymusserverjava.memberships.dtos.responses.MemberResponseDt
 import com.jetbrains.shared.dtos.ApiResponse;
 import com.jetbrains.shared.dtos.PagedResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,20 +19,17 @@ import static com.jetbrains.shared.utils.HelpersKt.getPagedResponse;
 
 @RestController
 @RequestMapping(value = "api/memberships")
+@RequiredArgsConstructor
 public class MembershipController {
 
     private final MembershipService membershipService;
-
-    public MembershipController(
-            MembershipService membershipService) {
-        this.membershipService = membershipService;
-    }
 
     @GetMapping("members")
     public ResponseEntity<ApiResponse<PagedResponse<List<MemberResponseDto>>>> findAllMembers(
             @RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
             @RequestParam(name = "pageSize", required = false, defaultValue = "10") int pageSize,
-            Principal principal) {
+            Principal principal
+    ) {
         var members = membershipService.findAllMembers(pageNumber, pageSize, principal.getName());
 
         var pagedResponse = getPagedResponse(members);
@@ -47,7 +45,8 @@ public class MembershipController {
 
     @PostMapping("register")
     public ResponseEntity<ApiResponse<?>> registerMember(
-            @ModelAttribute @Valid RegisterMemberRequestDto dto) {
+            @ModelAttribute @Valid RegisterMemberRequestDto dto
+    ) {
         membershipService.registerMember(dto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -67,7 +66,8 @@ public class MembershipController {
     @PutMapping("members/{memberId}")
     public ResponseEntity<ApiResponse<?>> updateMember(
             @PathVariable int memberId,
-            @RequestBody @Valid UpdateMemberRequestDto updateMemberRequestDto) {
+            @RequestBody @Valid UpdateMemberRequestDto updateMemberRequestDto
+    ) {
         return null;
     }
 

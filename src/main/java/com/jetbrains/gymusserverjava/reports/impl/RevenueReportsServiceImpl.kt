@@ -36,4 +36,7 @@ class RevenueReportsServiceImpl(
     override fun monthlyActiveMembershipsRevenue(): Double =
         membershipRepository.monthlyActiveRevenue
 
+    override fun todayRevenue(): Double =
+        membershipRepository.todayRevenue + saleRepository.totalRevenue + sessionRepository.totalRevenue
+
 }
