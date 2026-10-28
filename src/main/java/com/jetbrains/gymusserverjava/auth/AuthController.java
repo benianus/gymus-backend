@@ -20,12 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    
+
     private final AuthService authService;
 
-    @PostMapping("/login")
-    ResponseEntity<ApiResponse<AuthResponseDto>> login(@RequestBody LoginRequestDto request) {
-        var authResponse = authService.login(request);
+    @PostMapping("login")
+    ResponseEntity<ApiResponse<AuthResponseDto>> login(
+            @RequestBody LoginRequestDto loginRequestDto
+    ) {
+        var authResponse = authService.login(loginRequestDto);
         return new ResponseEntity<>(new ApiResponse<>(authResponse), HttpStatus.OK);
     }
 

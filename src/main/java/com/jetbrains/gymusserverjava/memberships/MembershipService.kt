@@ -4,6 +4,7 @@ import com.jetbrains.gymusserverjava.memberships.dtos.requests.RegisterMemberReq
 import com.jetbrains.gymusserverjava.memberships.dtos.requests.UpdateMemberRequestDto
 import com.jetbrains.gymusserverjava.memberships.dtos.responses.MemberCardResponseDto
 import com.jetbrains.gymusserverjava.memberships.dtos.responses.MemberResponseDto
+import com.jetbrains.gymusserverjava.memberships.dtos.responses.RecentMemberChecksInDto
 import org.springframework.data.domain.Page
 
 interface MembershipService {
@@ -14,4 +15,5 @@ interface MembershipService {
     fun findMemberCard(memberId: Int): MemberCardResponseDto
     fun deleteMember(memberId: Int)
     fun updateMember(memberId: Int, updateMemberRequestDto: UpdateMemberRequestDto)
+    fun recentChecksInMembers(): Set<RecentMemberChecksInDto>
 }

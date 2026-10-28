@@ -2,6 +2,7 @@ package com.jetbrains.gymusserverjava.memberships.entities;
 
 import com.jetbrains.gymusserverjava.auth.entities.User;
 import jakarta.persistence.*;
+import kotlin.jvm.JvmField;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,6 +44,7 @@ public class MemberCard {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id", nullable = false, unique = true)
+    @JvmField
     private Member member = null;
 
     @OneToOne(fetch = FetchType.EAGER)

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package com.jetbrains.gymusserverjava.auth.Impl
 
 import com.jetbrains.gymusserverjava.auth.AuthService
@@ -22,8 +24,9 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import java.util.concurrent.TimeUnit
 import kotlin.jvm.optionals.getOrElse
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @Service
 class AuthServiceImpl(
@@ -43,10 +46,9 @@ class AuthServiceImpl(
             )
         )
 
-        val user = userRepository.findByUsername(loginRequestDto.username).orElseThrow {
+        val user = userRepository.findByUsername(loginRequestDto.username).getOrElse {
             throw CustomExceptionHandler.resourceNotFound("User not found")
         }
-
 
         val role = user.authorities
             .map { it.authority }
@@ -55,72 +57,31 @@ class AuthServiceImpl(
         val claims = generateClaims(user, role)
 
         val accessToken = jwtHelper.generateAccessToken(claims, user as UserDetails)
-        val refreshToken = jwtHelper.generateRefreshToken(claims, user as UserDetails)
+        val refreshToken = Uuid.generateV7().toString()
         val expiresIn = jwtHelper.extractExpirationDate(accessToken).time
 
-        return validateRefreshToken(user, refreshToken, expiresIn, accessToken, role)
-    }
-
-    private fun validateRefreshToken(
-        user: User,
-        refreshToken: String,
-        expiresIn: Long,
-        accessToken: String,
-        role: String
-    ): AuthResponseDto {
-        // find refresh toke by user id
-        val foundedRefreshToken = refreshTokenRepository.findByUserId(user.id).getOrElse {
-            return@getOrElse null
-        }
-
-        if (foundedRefreshToken?.refreshToken == null &&
-            foundedRefreshToken?.revokedAt == null &&
-            foundedRefreshToken?.expiresAt == null
-        ) {
-            // update refresh token in the database if refresh token record exist but not valid
-            val updatedRefreshToken = refreshTokenRepository.save(
-                RefreshToken().apply {
-                    this.id = foundedRefreshToken?.id!!
-                    this.refreshToken = refreshToken
-                    this.user = user
-                    revokedAt = LocalDateTime.now()
-                    expiresAt =
-                        LocalDateTime.now().plusDays(TimeUnit.MILLISECONDS.toDays(expiresIn))
-                }
-            )
-
-            return AuthResponseDto(
-                accessToken,
-                updatedRefreshToken.refreshToken,
-                user.username,
-                role,
-                expiresIn
-            )
-        }
-
-        // save refresh token in the database if the refresh toke record is not exist
-        val newRefreshToken = refreshTokenRepository.save(
-            RefreshToken().apply {
-                this.refreshToken = refreshToken
-                this.user = user
-                revokedAt = LocalDateTime.now()
-                expiresAt =
-                    LocalDateTime.now().plusDays(TimeUnit.MILLISECONDS.toDays(expiresIn))
-            }
-        )
+        // save refresh token in the database
+        refreshTokenRepository.save(RefreshToken().apply {
+            token = refreshToken
+            createdAt = LocalDateTime.now()
+            updatedAt = LocalDateTime.now()
+            this.user = user
+            revokedAt = null
+            expiresAt = LocalDateTime.now().plusDays(7)
+        })
 
         return AuthResponseDto(
-            accessToken,
-            newRefreshToken.refreshToken,
-            user.username,
-            role,
-            expiresIn
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            username = user.username,
+            role = role,
+            expiresIn = expiresIn
         )
     }
 
     @Transactional
     override fun register(registerRequestDto: RegisterRequestDto): AuthResponseDto {
-        val newUser = userRepository.save<User>(
+        val newUser = userRepository.save(
             User(
                 0,
                 registerRequestDto.username,
@@ -135,17 +96,19 @@ class AuthServiceImpl(
         val claims = generateClaims(newUser, role)
 
         val accessToken = jwtHelper.generateAccessToken(claims, newUser as UserDetails)
-        val refreshToken = jwtHelper.generateRefreshToken(claims, newUser as UserDetails)
+        val refreshToken = Uuid.generateV7().toString()
         val expiresIn = jwtHelper.extractExpirationDate(accessToken).time
         val username = newUser.username
 
         // save refresh token in the database
         refreshTokenRepository.save(
             RefreshToken().apply {
-                this.refreshToken = refreshToken
-                user = newUser
-                revokedAt = LocalDateTime.now()
-                expiresAt = LocalDateTime.now().plusDays(TimeUnit.MILLISECONDS.toDays(expiresIn))
+                token = refreshToken
+                createdAt = LocalDateTime.now()
+                updatedAt = LocalDateTime.now()
+                this.user = newUser
+                revokedAt = null
+                expiresAt = LocalDateTime.now().plusDays(jwtProperties.refreshTokenExpiration)
             }
         )
 
@@ -164,57 +127,39 @@ class AuthServiceImpl(
             throw CustomExceptionHandler.resourceNotFound("User not found")
         }
 
-        val isTokenValid =
-            jwtHelper.isTokenValid(refreshTokenRequestDto.refreshToken, user as UserDetails)
+        val refreshToken =
+            refreshTokenRepository.findByToken(refreshTokenRequestDto.refreshToken)
+                .getOrElse { throw CustomExceptionHandler.resourceNotFound("Token not found") }
 
-        if (!isTokenValid) throw CustomExceptionHandler.invalidToken("invalid token")
+        // validate is token valid
+        if (refreshToken.revokedAt != null) {
+            throw CustomExceptionHandler.resourceNotFound("refresh token already revoked, try to login again!")
+        }
 
+        if (refreshToken.expiresAt.isBefore(LocalDateTime.now())) {
+            throw CustomExceptionHandler.resourceNotFound("refresh token expired, try to login again!")
+        }
+
+        // generate access token
         val role = user.authorities.map { it.authority }.firstOrNull() ?: "OWNER"
-
         val claims = generateClaims(user, role)
-
         val accessToken = jwtHelper.generateAccessToken(claims, user as UserDetails)
-        val refreshToken = jwtHelper.generateRefreshToken(claims, user as UserDetails)
-        val expiresIn = jwtHelper.extractExpirationDate(refreshToken).time
 
-        // save or update new refresh token in the database
-        refreshTokenRepository.save(
-            RefreshToken().apply {
-                this.user = user
-                this.refreshToken = refreshToken
-                revokedAt = LocalDateTime.now()
-                expiresAt = LocalDateTime.now().plusDays(TimeUnit.MILLISECONDS.toDays(expiresIn))
-            }
-        )
-
-        return RefreshTokenResponseDto(
-            accessToken = accessToken,
-            refreshToken = refreshToken
-        )
+        return RefreshTokenResponseDto(accessToken = accessToken, refreshToken = refreshToken.token)
     }
 
     override fun logout(logoutRequestDto: LogoutRequestDto) {
-        val user = userRepository.findByUsername(logoutRequestDto.username).orElseThrow {
+        userRepository.findByUsername(logoutRequestDto.username).getOrElse {
             throw CustomExceptionHandler.logoutException("logout succeed")
         }
 
-        val isTokenValid =
-            jwtHelper.isTokenValid(logoutRequestDto.refreshToken, user as UserDetails)
+        val refreshToken = refreshTokenRepository.findByToken(logoutRequestDto.refreshToken)
+            .getOrElse { throw CustomExceptionHandler.logoutException("logout succeed") }
 
-        if (!isTokenValid) throw CustomExceptionHandler.logoutException("logout succeed")
-
-        val refreshToken = refreshTokenRepository.findByRefreshToken(logoutRequestDto.refreshToken)
-            .orElseThrow { throw CustomExceptionHandler.logoutException("logout succeed") }
-
-        if (refreshToken.revokedAt == null ||
-            refreshToken.expiresAt.isBefore(LocalDateTime.now()) ||
-            refreshToken.expiresAt == null
-        ) throw CustomExceptionHandler.logoutException("logout succeed")
+        if (refreshToken.revokedAt != null) throw CustomExceptionHandler.logoutException("logout succeed")
 
         refreshToken.apply {
-            this.refreshToken = null
-            this.revokedAt = null
-            this.expiresAt = null
+            revokedAt = LocalDateTime.now()
         }
 
         refreshTokenRepository.save(refreshToken)

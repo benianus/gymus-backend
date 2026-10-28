@@ -1,8 +1,9 @@
 create table refresh_tokens
 (
-    id            int not null primary key generated always as identity,
-    user_id       int not null unique references users (id),
-    refresh_token text,
-    revoked_at    timestamp(2),
-    expires_at    timestamp(2)
-)
+    token      text primary key,
+    created_at timestamp not null,
+    updated_at timestamp not null,
+    user_id    int       not null references users (id) on delete cascade,
+    expires_at timestamp,
+    revoked_at timestamp
+);

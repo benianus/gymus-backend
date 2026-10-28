@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
@@ -16,20 +19,26 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class RefreshToken {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Id @Column(name = "token")
+    private String token;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
-
-    @Column(name = "refresh_token")
-    private String refreshToken;
 
     @Column(name = "revoked_at", columnDefinition = "timestamp")
     private LocalDateTime revokedAt;
 
     @Column(name = "expires_at", columnDefinition = "timestamp")
     private LocalDateTime expiresAt;
+
+    @CreationTimestamp
+    @Column(name = "created_at", columnDefinition = "timestamp default current_timestamp(2)")
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @UpdateTimestamp
+    @LastModifiedDate
+    @Column(name = "updated_at", columnDefinition = "timestamp default current_timestamp(2)")
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
 }

@@ -28,6 +28,9 @@ spring:
     locations:
       - classpath:db/migration
 
+server:
+  port: 8080
+
 jwt:
   key: ${SECRET_KEY}
   access-token-expiration: 86400000

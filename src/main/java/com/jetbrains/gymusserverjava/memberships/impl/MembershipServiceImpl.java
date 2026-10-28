@@ -6,6 +6,7 @@ import com.jetbrains.gymusserverjava.memberships.dtos.requests.RegisterMemberReq
 import com.jetbrains.gymusserverjava.memberships.dtos.requests.UpdateMemberRequestDto;
 import com.jetbrains.gymusserverjava.memberships.dtos.responses.MemberCardResponseDto;
 import com.jetbrains.gymusserverjava.memberships.dtos.responses.MemberResponseDto;
+import com.jetbrains.gymusserverjava.memberships.dtos.responses.RecentMemberChecksInDto;
 import com.jetbrains.gymusserverjava.memberships.entities.MemberAttendance;
 import com.jetbrains.gymusserverjava.memberships.entities.MembershipRenewal;
 import com.jetbrains.gymusserverjava.memberships.mappers.MemberCardMapper;
@@ -14,7 +15,8 @@ import com.jetbrains.gymusserverjava.memberships.mappers.MemberMapper;
 import com.jetbrains.gymusserverjava.memberships.mappers.MembershipMapper;
 import com.jetbrains.gymusserverjava.memberships.repositories.*;
 import com.jetbrains.shared.exceptions.CustomExceptionHandler;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,48 +25,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import static com.jetbrains.shared.utils.HelpersKt.getUserDetails;
 
 @Service
-
+@RequiredArgsConstructor
 public class MembershipServiceImpl implements MembershipService {
 
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
-    private MembershipRepository membershipRepository;
-
-    @Autowired
-    private MemberAttendanceRepository memberAttendanceRepository;
-
-    @Autowired
-    private MemberCardRepository memberCardRepository;
-
-    @Autowired
-    private MemberDocumentRepository memberDocumentRepository;
-
-    @Autowired
-    private MembershipRenewalRepository membershipRenewalRepository;
-
-    @Autowired
-    private MembershipTypeRepository membershipTypeRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private MemberDocumentMapper memberDocumentMapper;
-
-    @Autowired
-    private MemberCardMapper memberCardMapper;
-
-    @Autowired
-    private MemberMapper memberMapper;
-
-    @Autowired
-    private MembershipMapper membershipMapper;
+    private final MemberRepository memberRepository;
+    private final MembershipRepository membershipRepository;
+    private final MemberAttendanceRepository memberAttendanceRepository;
+    private final MemberCardRepository memberCardRepository;
+    private final MemberDocumentRepository memberDocumentRepository;
+    private final MembershipRenewalRepository membershipRenewalRepository;
+    private final MembershipTypeRepository membershipTypeRepository;
+    private final UserRepository userRepository;
+    private final MemberDocumentMapper memberDocumentMapper;
+    private final MemberCardMapper memberCardMapper;
+    private final MemberMapper memberMapper;
+    private final MembershipMapper membershipMapper;
 
     /**
      * {@summary if the member is older than 18 check if he attached parental authorization
@@ -84,7 +64,6 @@ public class MembershipServiceImpl implements MembershipService {
         checkMemberAge(dto);
 
         // get logged-in username
-
         var username = getUserDetails().getUsername();
         var user = userRepository.findByUsername(username)
                                  .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
@@ -251,6 +230,10 @@ public class MembershipServiceImpl implements MembershipService {
         var email = updateMemberRequestDto.email;
         // set the information that you want to update
         memberRepository.save(member);
+    }
+
+    @Override public @NotNull Set<RecentMemberChecksInDto> recentChecksInMembers() {
+        return memberAttendanceRepository.getRecentChecksInMembers();
     }
 
 }

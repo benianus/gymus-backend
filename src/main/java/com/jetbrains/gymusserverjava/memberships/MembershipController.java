@@ -4,6 +4,7 @@ import com.jetbrains.gymusserverjava.memberships.dtos.requests.RegisterMemberReq
 import com.jetbrains.gymusserverjava.memberships.dtos.requests.UpdateMemberRequestDto;
 import com.jetbrains.gymusserverjava.memberships.dtos.responses.MemberCardResponseDto;
 import com.jetbrains.gymusserverjava.memberships.dtos.responses.MemberResponseDto;
+import com.jetbrains.gymusserverjava.memberships.dtos.responses.RecentMemberChecksInDto;
 import com.jetbrains.shared.dtos.ApiResponse;
 import com.jetbrains.shared.dtos.PagedResponse;
 import jakarta.validation.Valid;
@@ -14,17 +15,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 
 import static com.jetbrains.shared.utils.HelpersKt.getPagedResponse;
 
 @RestController
-@RequestMapping(value = "api/memberships")
+@RequestMapping(value = "api/members")
 @RequiredArgsConstructor
 public class MembershipController {
 
     private final MembershipService membershipService;
 
-    @GetMapping("members")
+    @GetMapping
     public ResponseEntity<ApiResponse<PagedResponse<List<MemberResponseDto>>>> findAllMembers(
             @RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
             @RequestParam(name = "pageSize", required = false, defaultValue = "10") int pageSize,
@@ -37,7 +39,7 @@ public class MembershipController {
         return new ResponseEntity<>(new ApiResponse<>(pagedResponse), HttpStatus.OK);
     }
 
-    @GetMapping("members/{memberId}")
+    @GetMapping("{memberId}")
     ResponseEntity<ApiResponse<MemberCardResponseDto>> findMemberCard(@PathVariable int memberId) {
         var memberCard = membershipService.findMemberCard(memberId);
         return ResponseEntity.ok().body(new ApiResponse<>(memberCard));
@@ -63,7 +65,7 @@ public class MembershipController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping("members/{memberId}")
+    @PutMapping("{memberId}")
     public ResponseEntity<ApiResponse<?>> updateMember(
             @PathVariable int memberId,
             @RequestBody @Valid UpdateMemberRequestDto updateMemberRequestDto
@@ -71,10 +73,16 @@ public class MembershipController {
         return null;
     }
 
-    @DeleteMapping("members/{memberId}")
-    public ResponseEntity<ApiResponse<Void>> deleteMember(@PathVariable int memberId) {
+    @DeleteMapping("{memberId}")
+    public ResponseEntity<ApiResponse<?>> deleteMember(@PathVariable int memberId) {
         membershipService.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("recent-checks")
+    public ResponseEntity<ApiResponse<Set<RecentMemberChecksInDto>>> recentMembersChecksIn() {
+        var recentChecks = membershipService.recentChecksInMembers();
+        return new ResponseEntity<>(new ApiResponse<>(recentChecks), HttpStatus.OK);
     }
 
 }
