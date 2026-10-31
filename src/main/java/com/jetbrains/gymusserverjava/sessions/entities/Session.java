@@ -40,11 +40,11 @@ public class Session {
      * relationships
      */
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "session_type_id", nullable = false)
     private SessionType sessionType = null;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "created_by", nullable = false)
     private User user = null;
 

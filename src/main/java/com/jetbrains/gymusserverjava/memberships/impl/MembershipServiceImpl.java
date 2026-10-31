@@ -196,26 +196,10 @@ public class MembershipServiceImpl implements MembershipService {
     @Transactional
     @PreAuthorize("@securityUtils.isMemberOwner(#memberId)")
     public void deleteMember(int memberId) {
-        var membership = membershipRepository.findOneByMemberId(memberId)
-                                             .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
-                                                     "membership not found"));
-        var memberDocument = memberDocumentRepository.findOneByMemberId(memberId)
-                                                     .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
-                                                             "member document not found"));
-        var memberCard = memberCardRepository.findOneByMemberId(memberId)
-                                             .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
-                                                     "member card not found"));
-        var memberAttendances = memberAttendanceRepository.findAllByMemberId(memberId);
-        var memberRenewals = membershipRenewalRepository.findAllByMemberId(memberId);
         var member = memberRepository.findById(memberId)
                                      .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                              "member not found"));
 
-        membershipRepository.delete(membership);
-        memberCardRepository.delete(memberCard);
-        memberDocumentRepository.delete(memberDocument);
-        memberAttendanceRepository.deleteAll(memberAttendances);
-        membershipRenewalRepository.deleteAll(memberRenewals);
         memberRepository.delete(member);
     }
 
@@ -226,10 +210,31 @@ public class MembershipServiceImpl implements MembershipService {
         var member = memberRepository.findById(memberId)
                                      .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
                                              "member not found"));
+        var memberDocuments = memberDocumentRepository.findOneByMemberId(memberId)
+                                                      .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
+                                                              "member documents not found"));
+        var membershipType = membershipTypeRepository.findMembershipTypeByName(
+                                                             updateMemberRequestDto.membershipType)
+                                                     .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
+                                                             "membership type not found"));
+        var membership = membershipRepository.findByMemberId(memberId)
+                                             .orElseThrow(() -> CustomExceptionHandler.resourceNotFound(
+                                                     "membership not found"));
 
-        var email = updateMemberRequestDto.email;
         // set the information that you want to update
+        member.setEmail(updateMemberRequestDto.email);
+        member.setPhoneNumber(updateMemberRequestDto.phoneNumber);
+        member.setAddress(updateMemberRequestDto.address);
+        //        memberDocuments.setBirthCertificate(updateMemberRequestDto.birthCertificate);
+        //        memberDocuments.setMedicalCertificate(updateMemberRequestDto.medicalCertificate);
+        //        memberDocuments.setPersonalPhoto(updateMemberRequestDto.personalPhoto);
+        //        memberDocuments.setParentalAuthorization(updateMemberRequestDto.parentalAuthorization);
+        membership.setMembershipType(membershipType);
+
+        // save updated object in DB
         memberRepository.save(member);
+        membershipRepository.save(membership);
+        memberDocumentRepository.save(memberDocuments);
     }
 
     @Override public @NotNull Set<RecentMemberChecksInDto> recentChecksInMembers() {

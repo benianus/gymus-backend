@@ -2,7 +2,6 @@ package com.jetbrains.gymusserverjava.memberships.entities;
 
 import com.jetbrains.gymusserverjava.auth.entities.User;
 import jakarta.persistence.*;
-import kotlin.jvm.JvmField;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,16 +41,15 @@ public class MemberCard {
      * relationships
      */
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "member_id", nullable = false, unique = true)
-    @JvmField
     private Member member = null;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "membership_id", nullable = false, unique = true)
     private Membership membership = null;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "created_by", nullable = false)
     private User user = null;
 

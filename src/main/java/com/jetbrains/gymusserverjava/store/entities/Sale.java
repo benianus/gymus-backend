@@ -47,11 +47,11 @@ public class Sale {
      * relationships
      */
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product = null;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "made_by", nullable = false)
     private User user = null;
 

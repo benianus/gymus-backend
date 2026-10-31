@@ -51,11 +51,11 @@ public class MemberDocument {
      * relationships
      */
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "member_id", nullable = false, unique = true)
     private Member member = null;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "added_by", nullable = false)
     private User user = null;
 

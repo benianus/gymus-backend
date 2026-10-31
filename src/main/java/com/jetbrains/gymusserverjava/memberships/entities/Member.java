@@ -58,7 +58,7 @@ public class Member {
      * relationship
      */
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "created_by", nullable = false)
     private User user = null;
 
