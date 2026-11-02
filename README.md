@@ -57,8 +57,9 @@ Every sale should be registered by the employee who is responsible for selling i
 - [x] Renew memberships
 - [x] Get all members
 - [x] Get member card
-- [ ] Update Member
-- [ ] Delete Member
+- [x] Update Member
+- [x] Delete Member
+- [x] Recent Checks In Members
 
 ### Sessions:
 
@@ -71,8 +72,8 @@ Every sale should be registered by the employee who is responsible for selling i
 - [x] Get product
 - [x] Add new product
 - [x] Register new sale
-- [ ] Update product
-- [ ] Delete product
+- [x] Update product
+- [x] Delete product
 
 ### Reports:
 
@@ -101,7 +102,7 @@ Every sale should be registered by the employee who is responsible for selling i
 8. [x] Monthly memberships revenue
 9. [x] Total active memberships revenue
 10. [x] Monthly active memberships revenue
-11. [ ] Today's revenue
+11. [x] Today's revenue
 
 ## Non-Functional Requirements:
 
