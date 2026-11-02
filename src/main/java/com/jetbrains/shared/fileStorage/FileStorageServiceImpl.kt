@@ -11,11 +11,13 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
 
+private const val FILE_LENGTH = 5L * 1024 * 1024
+
 @Service
 class FileStorageServiceImpl(
     private val fileStorageProperties: FileStorageProperties
 ) : FileStorageService {
-    private val rootPath: Path = Paths.get(this.fileStorageProperties.uploadDir)
+    private val rootPath: Path = Paths.get(fileStorageProperties.uploadDir)
 
     init {
         verifyIfDirectoryExistOrCreate()
@@ -23,8 +25,8 @@ class FileStorageServiceImpl(
 
     @Throws(Exception::class)
     private fun checkFileLength(file: MultipartFile) {
-        if (file.isEmpty && file.size == 0L) {
-            throw Exception("File is empty")
+        if (file.isEmpty || file.size == 0L || file.size > FILE_LENGTH) {
+            throw Exception("File is empty or more then 5mb")
         }
     }
 
@@ -57,7 +59,7 @@ class FileStorageServiceImpl(
         }
     }
 
-    override fun storeFile(file: MultipartFile?): String {
+    override fun uploadFile(file: MultipartFile?): String {
         return file?.let {
             checkFileLength(it)
             val fileExtension = verifyAllowedFileExtension(it)
@@ -80,9 +82,10 @@ class FileStorageServiceImpl(
     override fun deleteFile(fileName: String) {
         try {
             val path = rootPath.resolve(fileName)
-            println(path)
             if (Files.exists(path)) {
                 path.toFile().delete()
+            } else {
+                throw CustomExceptionHandler.fileNotExist("File is not exist")
             }
         } catch (e: Exception) {
             throw RuntimeException(e)

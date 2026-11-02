@@ -31,16 +31,16 @@ spring:
 server:
   port: 8080
 
-jwt:
-  key: ${SECRET_KEY}
-  access-token-expiration: 86400000
-  refresh-token-expiration: 604800000
-
 servlet:
   multipart:
     enabled: true
     max-file-size: 5MB
     max-request-size: 5MB
+
+jwt:
+  key: ${SECRET_KEY}
+  access-token-expiration: 86400000
+  refresh-token-expiration: 604800000
 
 file:
   upload-dir: uploads

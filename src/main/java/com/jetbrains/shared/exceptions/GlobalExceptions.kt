@@ -19,10 +19,12 @@ class GlobalExceptions {
         )
 
     @ExceptionHandler(CustomExceptionHandler::class)
-    fun handleCustomException(e: CustomExceptionHandler): ResponseEntity<ApiResponse<List<String>>> =
+    fun handleCustomException(
+        e: CustomExceptionHandler
+    ): ResponseEntity<ApiResponse<List<String>>> =
         ResponseEntity(
-            ApiResponse(listOf(e.message ?: "unknown error")),
-            e.code ?: HttpStatus.BAD_REQUEST
+            ApiResponse(listOf(e.message)),
+            e.code
         )
 
     @ExceptionHandler(UsernameNotFoundException::class)

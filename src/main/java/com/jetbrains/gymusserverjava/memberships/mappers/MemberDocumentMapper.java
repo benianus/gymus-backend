@@ -22,10 +22,10 @@ public class MemberDocumentMapper {
     ) {
 
         // upload files
-        var medicalCertificate = fileStorageService.storeFile(dto.medicalCertificate);
-        var birthdateCertificate = fileStorageService.storeFile(dto.birthCertificate);
-        var personalPhoto = fileStorageService.storeFile(dto.personalPhoto);
-        var parentalAuthorization = fileStorageService.storeFile(dto.parentalAuthorization);
+        var medicalCertificate = fileStorageService.uploadFile(dto.medicalCertificate);
+        var birthdateCertificate = fileStorageService.uploadFile(dto.birthCertificate);
+        var personalPhoto = fileStorageService.uploadFile(dto.personalPhoto);
+        var parentalAuthorization = fileStorageService.uploadFile(dto.parentalAuthorization);
 
         var entity = new MemberDocument();
 

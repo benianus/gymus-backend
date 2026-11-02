@@ -34,7 +34,7 @@ public class StoreMapper {
     public Product dtoToEntity(CreateProductRequestDto dto, User user) {
         var product = new Product();
 
-        var imageFile = fileStorageService.storeFile(dto.productImage);
+        var imageFile = fileStorageService.uploadFile(dto.productImage);
 
         product.setProductName(dto.productName);
         product.setProductImage(imageFile);
@@ -49,10 +49,12 @@ public class StoreMapper {
     public Product dtoToEntity(UpdateProductRequestDto dto, User user, int productId) {
         var product = new Product();
 
-        var imageFile = fileStorageService.storeFile(dto.productImage);
+        // store the file in the file system
+        var imageFile = fileStorageService.uploadFile(dto.productImage);
 
         product.setId(productId);
         product.setProductName(dto.productName);
+        // store file metadata in DB
         product.setProductImage(imageFile);
         product.setProductDescription(dto.productDescription);
         product.setQuantity(dto.quantity);

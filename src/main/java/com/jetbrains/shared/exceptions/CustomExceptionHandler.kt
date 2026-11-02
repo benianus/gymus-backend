@@ -52,6 +52,10 @@ class CustomExceptionHandler(
             CustomExceptionHandler(message, HttpStatus.BAD_REQUEST)
 
         @JvmStatic
+        fun fileNotExist(message: String): CustomExceptionHandler =
+            CustomExceptionHandler(message, HttpStatus.BAD_REQUEST)
+
+        @JvmStatic
         fun logoutException(message: String): CustomExceptionHandler =
             CustomExceptionHandler(message, HttpStatus.NO_CONTENT)
     }

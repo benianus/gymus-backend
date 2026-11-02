@@ -23,7 +23,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @EnableMethodSecurity
 class SecurityConfig(
     private val jwtFilter: JwtFilter,
-    private val rateLimiter: RateLimitingFilter,
     private val userDetailsService: UserDetailsService
 ) {
     @Bean
@@ -75,6 +74,8 @@ class SecurityConfig(
                     .hasAnyRole(Role.OWNER.name)
                     .requestMatchers(HttpMethod.POST, "/api/products/{productId}/sales")
                     .hasAnyRole(Role.OWNER.name, Role.EMPLOYEE.name)
+                    //file storage
+                    .requestMatchers("/api/files/**").hasRole(Role.OWNER.name)
                     // reports
                     .requestMatchers("/api/reports/**")
                     .permitAll()

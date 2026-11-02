@@ -8,6 +8,7 @@ import com.jetbrains.gymusserverjava.memberships.dtos.responses.MemberCardRespon
 import com.jetbrains.gymusserverjava.memberships.dtos.responses.MemberResponseDto;
 import com.jetbrains.gymusserverjava.memberships.dtos.responses.RecentMemberChecksInDto;
 import com.jetbrains.gymusserverjava.memberships.entities.MemberAttendance;
+import com.jetbrains.gymusserverjava.memberships.entities.MemberDocument;
 import com.jetbrains.gymusserverjava.memberships.entities.MembershipRenewal;
 import com.jetbrains.gymusserverjava.memberships.mappers.MemberCardMapper;
 import com.jetbrains.gymusserverjava.memberships.mappers.MemberDocumentMapper;
@@ -15,6 +16,7 @@ import com.jetbrains.gymusserverjava.memberships.mappers.MemberMapper;
 import com.jetbrains.gymusserverjava.memberships.mappers.MembershipMapper;
 import com.jetbrains.gymusserverjava.memberships.repositories.*;
 import com.jetbrains.shared.exceptions.CustomExceptionHandler;
+import com.jetbrains.shared.fileStorage.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
@@ -45,6 +47,7 @@ public class MembershipServiceImpl implements MembershipService {
     private final MemberCardMapper memberCardMapper;
     private final MemberMapper memberMapper;
     private final MembershipMapper membershipMapper;
+    private final FileStorageService fileStorageService;
 
     /**
      * {@summary if the member is older than 18 check if he attached parental authorization
@@ -225,20 +228,41 @@ public class MembershipServiceImpl implements MembershipService {
         member.setEmail(updateMemberRequestDto.email);
         member.setPhoneNumber(updateMemberRequestDto.phoneNumber);
         member.setAddress(updateMemberRequestDto.address);
-        //        memberDocuments.setBirthCertificate(updateMemberRequestDto.birthCertificate);
-        //        memberDocuments.setMedicalCertificate(updateMemberRequestDto.medicalCertificate);
-        //        memberDocuments.setPersonalPhoto(updateMemberRequestDto.personalPhoto);
-        //        memberDocuments.setParentalAuthorization(updateMemberRequestDto.parentalAuthorization);
+
+        deleteOldFiles(memberDocuments);
+        updateWithNewFiles(updateMemberRequestDto, memberDocuments);
+
         membership.setMembershipType(membershipType);
 
-        // save updated object in DB
+        // update objects in DB
         memberRepository.save(member);
         membershipRepository.save(membership);
         memberDocumentRepository.save(memberDocuments);
     }
 
+
     @Override public @NotNull Set<RecentMemberChecksInDto> recentChecksInMembers() {
         return memberAttendanceRepository.getRecentChecksInMembers();
+    }
+
+    private void updateWithNewFiles(
+            UpdateMemberRequestDto updateMemberRequestDto,
+            MemberDocument memberDocuments
+    ) {
+        memberDocuments.setBirthCertificate(fileStorageService.uploadFile(updateMemberRequestDto.birthCertificate));
+        memberDocuments.setMedicalCertificate(fileStorageService.uploadFile(updateMemberRequestDto.medicalCertificate));
+        memberDocuments.setPersonalPhoto(fileStorageService.uploadFile(updateMemberRequestDto.personalPhoto));
+        memberDocuments.setParentalAuthorization(fileStorageService.uploadFile(
+                updateMemberRequestDto.parentalAuthorization));
+    }
+
+    private void deleteOldFiles(MemberDocument memberDocument) {
+        fileStorageService.deleteFile(memberDocument.getBirthCertificate());
+        fileStorageService.deleteFile(memberDocument.getMedicalCertificate());
+        fileStorageService.deleteFile(memberDocument.getPersonalPhoto());
+        if(memberDocument.getParentalAuthorization() != null) {
+            fileStorageService.deleteFile(memberDocument.getParentalAuthorization());
+        }
     }
 
 }
