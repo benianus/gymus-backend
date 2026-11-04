@@ -149,12 +149,15 @@ class AuthServiceImpl(
     }
 
     override fun logout(logoutRequestDto: LogoutRequestDto) {
-        userRepository.findByUsername(logoutRequestDto.username).getOrElse {
-            throw CustomExceptionHandler.logoutException("logout succeed")
-        }
+        userRepository.findByUsername(logoutRequestDto.username)
+            .getOrElse {
+                throw CustomExceptionHandler.logoutException("logout succeed")
+            }
 
-        val refreshToken = refreshTokenRepository.findByToken(logoutRequestDto.refreshToken)
-            .getOrElse { throw CustomExceptionHandler.logoutException("logout succeed") }
+        val refreshToken =
+            refreshTokenRepository.findByToken(logoutRequestDto.refreshToken).getOrElse {
+                throw CustomExceptionHandler.logoutException("logout succeed")
+            }
 
         if (refreshToken.revokedAt != null) throw CustomExceptionHandler.logoutException("logout succeed")
 

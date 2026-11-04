@@ -11,47 +11,49 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("api/reports")
 class SalesReportsController(private val reportsService: SalesReportsService) {
     @GetMapping("total-sales")
-    fun totalSales(): ResponseEntity<ApiResponse<Int>> =
-        ResponseEntity.ok().body(ApiResponse(reportsService.totalSales()))
+    fun totalSales(): ResponseEntity<ApiResponse<Int, Unit>> =
+        ResponseEntity.ok().body(ApiResponse.Success(reportsService.totalSales()))
 
     @GetMapping("monthly-sales")
-    fun monthlySales(): ResponseEntity<ApiResponse<Int>> =
-        ResponseEntity.ok().body(ApiResponse(reportsService.monthlySales()))
+    fun monthlySales(): ResponseEntity<ApiResponse<Int, Unit>> =
+        ResponseEntity.ok().body(ApiResponse.Success(reportsService.monthlySales()))
 
     @GetMapping("total-store-sales")
-    fun totalStoreSales(): ResponseEntity<ApiResponse<Int>> =
-        ResponseEntity.ok().body(ApiResponse(reportsService.totalStoreSales()))
+    fun totalStoreSales(): ResponseEntity<ApiResponse<Int, Unit>> =
+        ResponseEntity.ok().body(ApiResponse.Success(reportsService.totalStoreSales()))
 
     @GetMapping("monthly-store-sales")
-    fun monthlyStoreSales(): ResponseEntity<ApiResponse<Int>> =
-        ResponseEntity.ok().body(ApiResponse(reportsService.monthlyStoreSales()))
+    fun monthlyStoreSales(): ResponseEntity<ApiResponse<Int, Unit>> =
+        ResponseEntity.ok().body(ApiResponse.Success(reportsService.monthlyStoreSales()))
 
     @GetMapping("total-sessions-sales")
-    fun totalSessionsSales(): ResponseEntity<ApiResponse<Int>> = ResponseEntity.ok().body(
-        ApiResponse(reportsService.totalSessionsSales())
+    fun totalSessionsSales(): ResponseEntity<ApiResponse<Int, Unit>> = ResponseEntity.ok().body(
+        ApiResponse.Success(reportsService.totalSessionsSales())
     )
 
     @GetMapping("monthly-sessions-sales")
-    fun monthlySessionSales(): ResponseEntity<ApiResponse<Int>> = ResponseEntity.ok().body(
-        ApiResponse(reportsService.monthlySessionSales())
+    fun monthlySessionSales(): ResponseEntity<ApiResponse<Int, Unit>> = ResponseEntity.ok().body(
+        ApiResponse.Success(reportsService.monthlySessionSales())
     )
 
     @GetMapping("total-memberships-sales")
-    fun totalMembershipsSales(): ResponseEntity<ApiResponse<Int>> = ResponseEntity.ok().body(
-        ApiResponse(reportsService.totalMembershipsSales())
+    fun totalMembershipsSales(): ResponseEntity<ApiResponse<Int, Unit>> = ResponseEntity.ok().body(
+        ApiResponse.Success(reportsService.totalMembershipsSales())
     )
 
     @GetMapping("monthly-memberships-sales")
-    fun monthlyMembershipsSales(): ResponseEntity<ApiResponse<Int>> = ResponseEntity.ok().body(
-        ApiResponse(reportsService.monthlyMembershipsSales())
-    )
+    fun monthlyMembershipsSales(): ResponseEntity<ApiResponse<Int, Unit>> =
+        ResponseEntity.ok().body(
+            ApiResponse.Success(reportsService.monthlyMembershipsSales())
+        )
 
     @GetMapping("total-active-memberships-sales")
-    fun totalActiveMembershipsSales(): ResponseEntity<ApiResponse<Int>> =
-        ResponseEntity.ok().body(ApiResponse(reportsService.totalActiveMembershipsSales()))
+    fun totalActiveMembershipsSales(): ResponseEntity<ApiResponse<Int, Unit>> =
+        ResponseEntity.ok().body(ApiResponse.Success(reportsService.totalActiveMembershipsSales()))
 
     @GetMapping("monthly-active-memberships-sales")
-    fun monthlyActiveMembershipsSales(): ResponseEntity<ApiResponse<Int>> =
-        ResponseEntity.ok().body(ApiResponse(reportsService.monthlyActiveMembershipsSales()))
+    fun monthlyActiveMembershipsSales(): ResponseEntity<ApiResponse<Int, Unit>> =
+        ResponseEntity.ok()
+            .body(ApiResponse.Success(reportsService.monthlyActiveMembershipsSales()))
 
 }

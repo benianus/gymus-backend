@@ -27,7 +27,7 @@ public class MembershipController {
     private final MembershipService membershipService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PagedResponse<List<MemberResponseDto>>>> findAllMembers(
+    public ResponseEntity<ApiResponse<PagedResponse<List<MemberResponseDto>>, Void>> findAllMembers(
             @RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
             @RequestParam(name = "pageSize", required = false, defaultValue = "10") int pageSize,
             Principal principal
@@ -36,17 +36,19 @@ public class MembershipController {
 
         var pagedResponse = getPagedResponse(members);
 
-        return new ResponseEntity<>(new ApiResponse<>(pagedResponse), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse.Success<>(pagedResponse), HttpStatus.OK);
     }
 
     @GetMapping("{memberId}")
-    ResponseEntity<ApiResponse<MemberCardResponseDto>> findMemberCard(@PathVariable int memberId) {
+    ResponseEntity<ApiResponse<MemberCardResponseDto, Void>> findMemberCard(
+            @PathVariable int memberId
+    ) {
         var memberCard = membershipService.findMemberCard(memberId);
-        return ResponseEntity.ok().body(new ApiResponse<>(memberCard));
+        return ResponseEntity.ok().body(new ApiResponse.Success<>(memberCard));
     }
 
-    @PostMapping("register")
-    public ResponseEntity<ApiResponse<?>> registerMember(
+    @PostMapping
+    public ResponseEntity<ApiResponse<Void, Void>> registerMember(
             @ModelAttribute @Valid RegisterMemberRequestDto dto
     ) {
         membershipService.registerMember(dto);
@@ -54,35 +56,36 @@ public class MembershipController {
     }
 
     @PostMapping("record/{memberId}/attendance")
-    public ResponseEntity<ApiResponse<?>> recordAttendance(@PathVariable int memberId) {
+    public ResponseEntity<ApiResponse<Void, Void>> recordAttendance(@PathVariable int memberId) {
         membershipService.recordAttendance(memberId);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("{memberId}/renew")
-    public ResponseEntity<ApiResponse<?>> renewMembership(@PathVariable int memberId) {
+    public ResponseEntity<ApiResponse<Void, Void>> renewMembership(@PathVariable int memberId) {
         membershipService.renewMembership(memberId);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("{memberId}")
-    public ResponseEntity<ApiResponse<?>> updateMember(
+    public ResponseEntity<ApiResponse<Void, Void>> updateMember(
             @PathVariable int memberId,
             @RequestBody @Valid UpdateMemberRequestDto updateMemberRequestDto
     ) {
-        return null;
+        membershipService.updateMember(memberId, updateMemberRequestDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("{memberId}")
-    public ResponseEntity<ApiResponse<?>> deleteMember(@PathVariable int memberId) {
+    public ResponseEntity<ApiResponse<Void, Void>> deleteMember(@PathVariable int memberId) {
         membershipService.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("recent-checks")
-    public ResponseEntity<ApiResponse<Set<RecentMemberChecksInDto>>> recentMembersChecksIn() {
+    public ResponseEntity<ApiResponse<Set<RecentMemberChecksInDto>, Void>> recentMembersChecksIn() {
         var recentChecks = membershipService.recentChecksInMembers();
-        return new ResponseEntity<>(new ApiResponse<>(recentChecks), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse.Success<>(recentChecks), HttpStatus.OK);
     }
 
 }

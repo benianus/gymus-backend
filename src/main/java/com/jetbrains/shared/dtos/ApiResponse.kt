@@ -1,6 +1,6 @@
 package com.jetbrains.shared.dtos
 
-data class ApiResponse<T>(val data: T?, val status: String, val errors: List<String>?) {
-    constructor(data: T) : this(data, "success", null)
-    constructor(errors: List<String>) : this(null, "error", errors)
+sealed interface ApiResponse<out D, out E> {
+    data class Success<out D, out E>(val data: D) : ApiResponse<D, E>
+    data class Error<out D, out E>(val error: E) : ApiResponse<D, E>
 }

@@ -8,6 +8,7 @@ import com.jetbrains.gymusserverjava.auth.dtos.responses.AuthResponseDto;
 import com.jetbrains.gymusserverjava.auth.dtos.responses.RefreshTokenResponseDto;
 import com.jetbrains.shared.dtos.ApiResponse;
 import jakarta.validation.Valid;
+import kotlin.Unit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,34 +25,36 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("login")
-    ResponseEntity<ApiResponse<AuthResponseDto>> login(
+    ResponseEntity<ApiResponse<AuthResponseDto, Unit>> login(
             @RequestBody LoginRequestDto loginRequestDto
     ) {
         var authResponse = authService.login(loginRequestDto);
-        return new ResponseEntity<>(new ApiResponse<>(authResponse), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse.Success<>(authResponse), HttpStatus.OK);
     }
 
     @PostMapping("register")
-    ResponseEntity<ApiResponse<AuthResponseDto>> register(@RequestBody RegisterRequestDto request) {
+    ResponseEntity<ApiResponse<AuthResponseDto, Unit>> register(
+            @RequestBody RegisterRequestDto request
+    ) {
         var authResponse = authService.register(request);
-        return new ResponseEntity<>(new ApiResponse<>(authResponse), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ApiResponse.Success<>(authResponse), HttpStatus.CREATED);
     }
 
     @PostMapping("refresh")
-    ResponseEntity<ApiResponse<RefreshTokenResponseDto>> refresh(
+    ResponseEntity<ApiResponse<RefreshTokenResponseDto, Unit>> refresh(
             @RequestBody @Valid
             RefreshTokenRequestDto refreshTokenRequestDto
     ) {
         var response = authService.refreshToken(refreshTokenRequestDto);
-        return new ResponseEntity<>(new ApiResponse<>(response), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse.Success<>(response), HttpStatus.OK);
     }
 
     @PostMapping("logout")
-    ResponseEntity<ApiResponse<String>> logout(
+    ResponseEntity<ApiResponse<String, Unit>> logout(
             @RequestBody @Valid LogoutRequestDto logoutRequestDto
     ) {
         authService.logout(logoutRequestDto);
-        return new ResponseEntity<>(new ApiResponse<>("Logout Succeed"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse.Success<>("Logout Succeed"), HttpStatus.OK);
     }
 
 }

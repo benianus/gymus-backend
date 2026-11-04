@@ -24,7 +24,7 @@ public class StoreController {
     private StoreService storeService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PagedResponse<List<ProductResponseDto>>>> findAll(
+    public ResponseEntity<ApiResponse<PagedResponse<List<ProductResponseDto>>, Void>> findAll(
             @RequestParam(name = "page", defaultValue = "1", required = false) int page,
             @RequestParam(name = "pageSize", defaultValue = "10", required = false) int pageSize
     ) {
@@ -32,17 +32,19 @@ public class StoreController {
 
         var pagedResponse = getPagedResponse(products);
 
-        return new ResponseEntity<>(new ApiResponse<>(pagedResponse), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse.Success<>(pagedResponse), HttpStatus.OK);
     }
 
     @GetMapping("{productId}")
-    public ResponseEntity<ApiResponse<ProductResponseDto>> findById(@PathVariable int productId) {
+    public ResponseEntity<ApiResponse<ProductResponseDto, Void>> findById(
+            @PathVariable int productId
+    ) {
         var product = storeService.findById(productId);
-        return new ResponseEntity<>(new ApiResponse<>(product), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse.Success<>(product), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> save(
+    public ResponseEntity<ApiResponse<Void, Void>> save(
             @ModelAttribute @Valid CreateProductRequestDto requestDto
     ) {
         storeService.save(requestDto);
@@ -50,7 +52,7 @@ public class StoreController {
     }
 
     @PutMapping("{productId}")
-    public ResponseEntity<ApiResponse<ProductResponseDto>> update(
+    public ResponseEntity<ApiResponse<ProductResponseDto, Void>> update(
             @ModelAttribute @Valid UpdateProductRequestDto dto,
             @PathVariable int productId
     ) {
@@ -59,13 +61,13 @@ public class StoreController {
     }
 
     @DeleteMapping("{productId}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable int productId) {
+    public ResponseEntity<ApiResponse<Void, Void>> delete(@PathVariable int productId) {
         storeService.delete(productId);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("{productId}/sales")
-    public ResponseEntity<ApiResponse<Void>> registerSale(
+    public ResponseEntity<ApiResponse<Void, Void>> registerSale(
             @Valid @RequestBody RegisterSaleRequestDto requestDto,
             @PathVariable int productId
     ) {
