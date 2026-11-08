@@ -16,6 +16,7 @@ import com.jetbrains.gymusserverjava.auth.repositories.UserRepository
 import com.jetbrains.shared.exceptions.CustomExceptionHandler
 import com.jetbrains.shared.security.JwtHelper
 import com.jetbrains.shared.security.JwtProperties
+import com.jetbrains.shared.utils.LOGOUT_SUCCEED_MESSAGE
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.UserDetails
@@ -151,15 +152,17 @@ class AuthServiceImpl(
     override fun logout(logoutRequestDto: LogoutRequestDto) {
         userRepository.findByUsername(logoutRequestDto.username)
             .getOrElse {
-                throw CustomExceptionHandler.logoutException("logout succeed")
+                throw CustomExceptionHandler.logoutException(LOGOUT_SUCCEED_MESSAGE)
             }
 
         val refreshToken =
             refreshTokenRepository.findByToken(logoutRequestDto.refreshToken).getOrElse {
-                throw CustomExceptionHandler.logoutException("logout succeed")
+                throw CustomExceptionHandler.logoutException(LOGOUT_SUCCEED_MESSAGE)
             }
 
-        if (refreshToken.revokedAt != null) throw CustomExceptionHandler.logoutException("logout succeed")
+        if (refreshToken.revokedAt != null) throw CustomExceptionHandler.logoutException(
+            LOGOUT_SUCCEED_MESSAGE
+        )
 
         refreshToken.apply {
             revokedAt = LocalDateTime.now()

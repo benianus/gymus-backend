@@ -14,72 +14,72 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 @RestControllerAdvice
 class GlobalExceptions {
     @ExceptionHandler(Exception::class)
-    fun handleException(e: Exception): ResponseEntity<ApiResponse<Unit, String>> =
+    fun handleException(e: Exception): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            ApiResponse.Error(e.message ?: "unknown error"),
+            ApiResponse.Error(ErrorResponseDto(e.message ?: "unknown error")),
             HttpStatus.BAD_REQUEST
         )
 
     @ExceptionHandler(CustomExceptionHandler::class)
     fun handleCustomException(
         e: CustomExceptionHandler
-    ): ResponseEntity<ApiResponse<Unit, String>> =
+    ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            ApiResponse.Error(e.message),
+            ApiResponse.Error(ErrorResponseDto(e.message)),
             e.code
         )
 
     @ExceptionHandler(UsernameNotFoundException::class)
     fun handleUsernameNotFoundException(
         e: UsernameNotFoundException
-    ): ResponseEntity<ApiResponse<Unit, String>> =
+    ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            ApiResponse.Error(e.message ?: "unknown error"),
+            ApiResponse.Error(ErrorResponseDto(e.message ?: "unknown error")),
             HttpStatus.NOT_FOUND
         )
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleMethodArgumentNotValidException(
         e: MethodArgumentNotValidException
-    ): ResponseEntity<ApiResponse<Unit, String>> =
+    ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            ApiResponse.Error(e.message),
+            ApiResponse.Error(ErrorResponseDto(e.message)),
             HttpStatus.BAD_REQUEST
         )
 
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleIllegalArgumentException(
         e: IllegalArgumentException
-    ): ResponseEntity<ApiResponse<Unit, String>> =
+    ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            ApiResponse.Error(e.message ?: "unknown error"),
+            ApiResponse.Error(ErrorResponseDto(e.message ?: "unknown error")),
             HttpStatus.BAD_REQUEST
         )
 
     @ExceptionHandler(NullPointerException::class)
     fun handleNullPointerException(
         e: NullPointerException
-    ): ResponseEntity<ApiResponse<Unit, String>> =
+    ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            ApiResponse.Error(e.message ?: "unknown error"),
+            ApiResponse.Error(ErrorResponseDto(e.message ?: "unknown error")),
             HttpStatus.BAD_REQUEST
         )
 
     @ExceptionHandler(InvalidIdException::class)
     fun handleInvalidIdException(
         e: InvalidIdException
-    ): ResponseEntity<ApiResponse<Unit, String>> =
+    ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            ApiResponse.Error(e.message),
+            ApiResponse.Error(ErrorResponseDto(e.message)),
             HttpStatus.BAD_REQUEST
         )
 
     @ExceptionHandler(AuthorizationDeniedException::class)
     fun handleAuthorizationDeniedException(
         e: AuthorizationDeniedException
-    ): ResponseEntity<ApiResponse<Unit, String>> =
+    ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            ApiResponse.Error("${e.message}, You are not authorized to perform this action"),
+            ApiResponse.Error(ErrorResponseDto("${e.message}, You are not authorized to perform this action")),
             HttpStatus.FORBIDDEN
         )
 

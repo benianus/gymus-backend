@@ -33,12 +33,12 @@ public class RefreshToken {
     private LocalDateTime expiresAt;
 
     @CreationTimestamp
-    @Column(name = "created_at", columnDefinition = "timestamp default current_timestamp(2)")
+    @Column(name = "created_at", columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @UpdateTimestamp
     @LastModifiedDate
-    @Column(name = "updated_at", columnDefinition = "timestamp default current_timestamp(2)")
+    @Column(name = "updated_at", columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime updatedAt = LocalDateTime.now();
 
 }

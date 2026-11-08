@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.jetbrains.shared.utils.ConstantsKt.LOGOUT_SUCCEED_MESSAGE;
+
 @RestController
 @RequestMapping("api/auth")
 @RequiredArgsConstructor
@@ -54,7 +56,10 @@ public class AuthController {
             @RequestBody @Valid LogoutRequestDto logoutRequestDto
     ) {
         authService.logout(logoutRequestDto);
-        return new ResponseEntity<>(new ApiResponse.Success<>("Logout Succeed"), HttpStatus.OK);
+        return new ResponseEntity<>(
+                new ApiResponse.Success<>(LOGOUT_SUCCEED_MESSAGE),
+                HttpStatus.OK
+        );
     }
 
 }
