@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ import static com.jetbrains.shared.utils.HelpersKt.calculateAge;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@EnableJpaAuditing
 public class Member {
 
     @Id

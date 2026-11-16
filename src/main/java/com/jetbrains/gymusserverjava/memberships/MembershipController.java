@@ -83,7 +83,9 @@ public class MembershipController {
     }
 
     @GetMapping("recent-checks")
-    public ResponseEntity<ApiResponse<Set<RecentMemberChecksInDto>, Void>> recentMembersChecksIn() {
+    public ResponseEntity<ApiResponse<Set<RecentMemberChecksInDto>, Void>> recentMembersChecksIn(
+            Principal principal
+    ) {
         var recentChecks = membershipService.recentChecksInMembers();
         return new ResponseEntity<>(new ApiResponse.Success<>(recentChecks), HttpStatus.OK);
     }

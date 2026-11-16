@@ -1,7 +1,9 @@
 package com.jetbrains.shared.exceptions
 
 import com.jetbrains.shared.dtos.ApiResponse
+import com.jetbrains.shared.dtos.ApiResponse.Error
 import com.jetbrains.shared.dtos.ErrorResponseDto
+import io.jsonwebtoken.ExpiredJwtException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.BadCredentialsException
@@ -16,7 +18,7 @@ class GlobalExceptions {
     @ExceptionHandler(Exception::class)
     fun handleException(e: Exception): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            ApiResponse.Error(ErrorResponseDto(e.message ?: "unknown error")),
+            Error(ErrorResponseDto(e.message ?: "unknown error")),
             HttpStatus.BAD_REQUEST
         )
 
@@ -25,7 +27,7 @@ class GlobalExceptions {
         e: CustomExceptionHandler
     ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            ApiResponse.Error(ErrorResponseDto(e.message)),
+            Error(ErrorResponseDto(e.message)),
             e.code
         )
 
@@ -34,7 +36,7 @@ class GlobalExceptions {
         e: UsernameNotFoundException
     ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            ApiResponse.Error(ErrorResponseDto(e.message ?: "unknown error")),
+            Error(ErrorResponseDto(e.message ?: "unknown error")),
             HttpStatus.NOT_FOUND
         )
 
@@ -43,7 +45,7 @@ class GlobalExceptions {
         e: MethodArgumentNotValidException
     ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            ApiResponse.Error(ErrorResponseDto(e.message)),
+            Error(ErrorResponseDto(e.message)),
             HttpStatus.BAD_REQUEST
         )
 
@@ -52,7 +54,7 @@ class GlobalExceptions {
         e: IllegalArgumentException
     ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            ApiResponse.Error(ErrorResponseDto(e.message ?: "unknown error")),
+            Error(ErrorResponseDto(e.message ?: "unknown error")),
             HttpStatus.BAD_REQUEST
         )
 
@@ -61,7 +63,7 @@ class GlobalExceptions {
         e: NullPointerException
     ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            ApiResponse.Error(ErrorResponseDto(e.message ?: "unknown error")),
+            Error(ErrorResponseDto(e.message ?: "unknown error")),
             HttpStatus.BAD_REQUEST
         )
 
@@ -70,7 +72,7 @@ class GlobalExceptions {
         e: InvalidIdException
     ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            ApiResponse.Error(ErrorResponseDto(e.message)),
+            Error(ErrorResponseDto(e.message)),
             HttpStatus.BAD_REQUEST
         )
 
@@ -79,7 +81,7 @@ class GlobalExceptions {
         e: AuthorizationDeniedException
     ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            ApiResponse.Error(ErrorResponseDto("${e.message}, You are not authorized to perform this action")),
+            Error(ErrorResponseDto("${e.message}, You are not authorized to perform this action")),
             HttpStatus.FORBIDDEN
         )
 
@@ -88,7 +90,17 @@ class GlobalExceptions {
         e: BadCredentialsException
     ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            ApiResponse.Error(ErrorResponseDto("${e.message} or invalid!")),
+            Error(ErrorResponseDto("${e.message} or invalid!")),
             HttpStatus.BAD_REQUEST
         )
+
+    @ExceptionHandler(ExpiredJwtException::class)
+    fun handleExpiredJwtException(
+        e: ExpiredJwtException
+    ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> {
+        return ResponseEntity(
+            Error(ErrorResponseDto("${e.message}")),
+            HttpStatus.FORBIDDEN
+        )
+    }
 }

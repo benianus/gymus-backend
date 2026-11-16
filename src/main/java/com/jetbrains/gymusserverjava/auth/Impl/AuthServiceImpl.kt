@@ -83,14 +83,10 @@ class AuthServiceImpl(
     @Transactional
     override fun register(registerRequestDto: RegisterRequestDto): AuthResponseDto {
         val newUser = userRepository.save(
-            User(
-                0,
-                registerRequestDto.username,
-                passwordEncoder.encode(registerRequestDto.password),
-                "OWNER",
-                LocalDateTime.now(),
-                LocalDateTime.now()
-            )
+            User().apply {
+                username = registerRequestDto.username
+                password = passwordEncoder.encode(registerRequestDto.password)
+            }
         )
 
         val role = newUser.role
@@ -107,9 +103,9 @@ class AuthServiceImpl(
                 token = refreshToken
                 createdAt = LocalDateTime.now()
                 updatedAt = LocalDateTime.now()
-                this.user = newUser
+                user = newUser
                 revokedAt = null
-                expiresAt = LocalDateTime.now().plusDays(jwtProperties.refreshTokenExpiration)
+                expiresAt = LocalDateTime.now().plusDays(7)
             }
         )
 

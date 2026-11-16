@@ -21,11 +21,16 @@ public interface MemberCardRepository extends JpaRepository<MemberCard, Integer>
                            mc.joinDate,
                            ms.startDate,
                            ms.endDate,
-                           md.personalPhoto
+                           md.personalPhoto,
+                           (select ma.checkDate
+                            from MemberAttendance ma
+                            where ma.member.id = :memberId
+                            order by ma.checkDate desc
+                            limit 1) as checkDate
                     from Member m
-                            join MemberCard mc on mc.member.id = m.id
-                            join Membership ms on ms.member.id = m.id
-                            join MemberDocument md on md.member.id = m.id
+                    join MemberCard mc on mc.member.id = m.id
+                    join Membership ms on ms.member.id = m.id
+                    join MemberDocument md on md.member.id = m.id
                     where mc.member.id = :memberId
                     """
     )

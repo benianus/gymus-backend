@@ -10,8 +10,12 @@ data class MemberCardResponseDto(
     val joinDate: LocalDate,
     val startDate: LocalDate,
     val endDate: LocalDate,
-    val personalPhoto: String
+    val personalPhoto: String,
+    val checkDate: LocalDate?
 ) {
     val isActive: Boolean
         get() = endDate.isAfter(LocalDate.now())
+
+    val isChecked: Boolean
+        get() = checkDate?.isEqual(LocalDate.now()) ?: false
 }
