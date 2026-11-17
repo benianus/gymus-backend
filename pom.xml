@@ -29,8 +29,7 @@
     </scm>
     <properties>
         <java.version>25</java.version>
-        <kotlin.version>2.3.10</kotlin.version>
-
+        <kotlin.version>2.3.21</kotlin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -117,7 +116,7 @@
             <artifactId>spring-boot-starter-webmvc-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--        kotlin-->
+        <!--kotlin for spring boot-->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-reflect</artifactId>
@@ -157,7 +156,7 @@
 
     <build>
         <plugins>
-
+            <!--Spring Boot plugin-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -170,74 +169,22 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            <!--Kotlin plugins-->
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <version>${kotlin.version}</version>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>test-compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>kapt</id>
-                        <goals>
-                            <goal>kapt
-                            </goal> <!-- You can skip the <goals> element if you enable extensions for the plugin -->
-                        </goals>
-                        <configuration>
-                            <sourceDirs>
-                                <sourceDir>src/main/kotlin</sourceDir>
-                                <sourceDir>src/main/java</sourceDir>
-                            </sourceDirs>
-                            <annotationProcessorPaths>
-                                <!-- Specify your annotation processors here -->
-                                <annotationProcessorPath>
-                                    <groupId>com.google.dagger</groupId>
-                                    <artifactId>dagger-compiler</artifactId>
-                                    <version>2.9</version>
-                                </annotationProcessorPath>
-                            </annotationProcessorPaths>
-                        </configuration>
-                    </execution>
-                </executions>
                 <configuration>
-                    <jvmTarget>${java.version}</jvmTarget>
-                    <compilerPlugins>
-                        <!-- Or "spring" for the Spring support -->
-                        <plugin>lombok</plugin>
-                        <plugin>jpa</plugin>
-                        <plugin>no-arg</plugin>
-                        <plugin>spring</plugin>
-                    </compilerPlugins>
-
-                    <pluginOptions>
-                        <!-- Each annotation is placed on its own line -->
-                        <!--                        <option>lombok:config=${project.basedir}/lombok.config</option>-->
-                        <option>no-arg:annotation=com.my.Annotation</option>
-                        <option>all-open:annotation=com.my.Annotation</option>
-                        <option>all-open:annotation=com.their.AnotherAnnotation</option>
-                    </pluginOptions>
                     <args>
-                        <arg>-Xannotation-default-target=param-property</arg>
+                        <arg>-Xjsr305=strict</arg>
                     </args>
+                    <compilerPlugins>
+                        <plugin>spring</plugin>
+                        <plugin>lombok</plugin>
+                    </compilerPlugins>
                 </configuration>
                 <dependencies>
-                    <dependency>
-                        <groupId>org.jetbrains.kotlin</groupId>
-                        <artifactId>kotlin-maven-noarg</artifactId>
-                        <version>${kotlin.version}</version>
-                    </dependency>
                     <dependency>
                         <groupId>org.jetbrains.kotlin</groupId>
                         <artifactId>kotlin-maven-allopen</artifactId>
@@ -248,14 +195,10 @@
                         <artifactId>kotlin-maven-lombok</artifactId>
                         <version>${kotlin.version}</version>
                     </dependency>
-                    <dependency>
-                        <groupId>org.projectlombok</groupId>
-                        <artifactId>lombok</artifactId>
-                        <version>1.18.20</version>
-                        <scope>provided</scope>
-                    </dependency>
                 </dependencies>
             </plugin>
+
+            <!--Maven plugins-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -282,27 +225,6 @@
                         <goals>
                             <goal>testCompile</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                        <id>kapt</id>
-                        <goals>
-                            <goal>kapt
-                            </goal> <!-- You can skip the <goals> element if you enable extensions for the plugin -->
-                        </goals>
-                        <configuration>
-                            <sourceDirs>
-                                <sourceDir>src/main/kotlin</sourceDir>
-                                <sourceDir>src/main/java</sourceDir>
-                            </sourceDirs>
-                            <annotationProcessorPaths>
-                                <!-- Specify your annotation processors here -->
-                                <annotationProcessorPath>
-                                    <groupId>com.google.dagger</groupId>
-                                    <artifactId>dagger-compiler</artifactId>
-                                    <version>2.9</version>
-                                </annotationProcessorPath>
-                            </annotationProcessorPaths>
-                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
