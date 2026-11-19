@@ -1,5 +1,6 @@
 package com.jetbrains.gymusserverjava.auth.dtos.requests
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 
@@ -11,5 +12,6 @@ data class LogoutRequestDto(
 
     @NotNull
     @NotBlank
+    @JsonProperty(value = "refresh_token")
     val refreshToken: String
 )

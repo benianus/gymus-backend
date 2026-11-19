@@ -1,5 +1,6 @@
 package com.jetbrains.gymusserverjava.memberships.dtos.requests
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.*
 import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDate
@@ -11,25 +12,32 @@ data class RegisterMemberRequestDto(
     @NotNull
     @NotEmpty
     @Size(min = 3, max = 50)
-    @JvmField val firstName: String,
+    @JvmField
+    @JsonProperty(value = "first_name")
+    val firstName: String,
 
     @NotBlank
     @NotNull
     @NotEmpty
     @Size(min = 3, max = 50)
-    @JvmField val lastName: String,
+    @JvmField
+    @JsonProperty("last_name")
+    val lastName: String,
 
     @NotBlank
     @NotNull
     @NotEmpty
     @Email
-    @JvmField val email: String,
+    @JvmField
+    val email: String,
 
     @NotBlank
     @NotNull
     @NotEmpty
     @Size(max = 25)
-    @JvmField val phoneNumber: String,
+    @JvmField
+    @JsonProperty(value = "phone_number")
+    val phoneNumber: String,
 
     @NotNull
     @NotEmpty
@@ -38,16 +46,31 @@ data class RegisterMemberRequestDto(
 
     @NotNull
     @PastOrPresent
-    @JvmField val birthdate: LocalDate,
-    @JvmField val medicalCertificate: MultipartFile,
-    @JvmField val birthCertificate: MultipartFile,
-    @JvmField val personalPhoto: MultipartFile,
-    @JvmField val parentalAuthorization: MultipartFile?,
+    @JvmField
+    val birthdate: LocalDate,
+
+    @JvmField
+    @JsonProperty("medical_certificate")
+    val medicalCertificate: MultipartFile,
+
+    @JvmField
+    @JsonProperty("birth_certificate")
+    val birthCertificate: MultipartFile,
+
+    @JvmField
+    @JsonProperty("personal_photo")
+    val personalPhoto: MultipartFile,
+
+    @JvmField
+    @JsonProperty("parental_authorization")
+    val parentalAuthorization: MultipartFile?,
 
     @NotNull
     @NotEmpty
     @NotBlank
-    @JvmField val membershipType: String
+    @JvmField
+    @JsonProperty("membership_type")
+    val membershipType: String
 ) {
 
     fun age(): Byte {

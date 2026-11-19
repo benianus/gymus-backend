@@ -1,5 +1,6 @@
 package com.jetbrains.gymusserverjava.memberships.dtos.requests
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
@@ -16,17 +17,33 @@ data class UpdateMemberRequestDto(
     @NotBlank
     @NotEmpty
     @Size(max = 25)
-    @JvmField val phoneNumber: String,
+    @JvmField
+    @JsonProperty("phone_number")
+    val phoneNumber: String,
 
     @NotEmpty
     @NotBlank
-    @JvmField val address: String,
-    @JvmField val medicalCertificate: MultipartFile,
-    @JvmField val birthCertificate: MultipartFile,
-    @JvmField val personalPhoto: MultipartFile,
-    @JvmField val parentalAuthorization: MultipartFile?,
+    @JvmField
+    val address: String,
+    @JvmField
+    @JsonProperty("medical_certificate")
+    val medicalCertificate: MultipartFile,
+
+    @JvmField
+    @JsonProperty("birth_certificate")
+    val birthCertificate: MultipartFile,
+
+    @JvmField
+    @JsonProperty("personal_photo")
+    val personalPhoto: MultipartFile,
+
+    @JvmField
+    @JsonProperty("parental_authorization")
+    val parentalAuthorization: MultipartFile?,
 
     @NotEmpty
     @NotBlank
-    @JvmField val membershipType: String
+    @JvmField
+    @JsonProperty("membership_type")
+    val membershipType: String
 )
