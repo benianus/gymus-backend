@@ -39,10 +39,12 @@ public interface MemberAttendanceRepository extends JpaRepository<MemberAttendan
                              join Membership ms ON m.id = ms.member.id
                              join MemberDocument md on m.id = md.member.id
                              join MemberAttendance ma on m.id = ma.member.id
+                             join User u on m.user.id = u.id
+                    where u.username = :username
                     order by ma.createdAt desc
                     limit 2
                     """
     )
-    Set<RecentMemberChecksInDto> getRecentChecksInMembers();
+    Set<RecentMemberChecksInDto> getRecentChecksInMembers(@Param("username") String username);
 
 }

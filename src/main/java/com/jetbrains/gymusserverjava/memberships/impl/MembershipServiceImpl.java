@@ -241,8 +241,8 @@ public class MembershipServiceImpl implements MembershipService {
     }
 
 
-    @Override public @NotNull Set<RecentMemberChecksInDto> recentChecksInMembers() {
-        return memberAttendanceRepository.getRecentChecksInMembers();
+    @Override public @NotNull Set<RecentMemberChecksInDto> recentChecksInMembers(String username) {
+        return memberAttendanceRepository.getRecentChecksInMembers(username);
     }
 
     private void updateWithNewFiles(

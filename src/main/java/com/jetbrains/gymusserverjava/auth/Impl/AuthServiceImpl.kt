@@ -156,9 +156,11 @@ class AuthServiceImpl(
                 throw CustomExceptionHandler.logoutException(LOGOUT_SUCCEED_MESSAGE)
             }
 
-        if (refreshToken.revokedAt != null) throw CustomExceptionHandler.logoutException(
-            LOGOUT_SUCCEED_MESSAGE
-        )
+        if (refreshToken.revokedAt != null) {
+            throw CustomExceptionHandler.logoutException(
+                LOGOUT_SUCCEED_MESSAGE
+            )
+        }
 
         refreshToken.apply {
             revokedAt = LocalDateTime.now()

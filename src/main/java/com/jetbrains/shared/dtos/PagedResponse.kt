@@ -3,7 +3,7 @@ package com.jetbrains.shared.dtos
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class PagedResponse<T>(
-    val data: T,
+    val content: T,
     @JsonProperty("page_number")
     val pageNumber: Int,
     @JsonProperty("page_size")

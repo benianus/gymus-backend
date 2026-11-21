@@ -17,7 +17,7 @@ fun calculateAge(birthdate: LocalDate) =
 
 fun <T : Any> getPagedResponse(data: Page<T>) =
     PagedResponse(
-        data = data.content,
+        content = data.content,
         pageNumber = data.number + 1,
         pageSize = data.size,
         totalItems = data.totalElements,

@@ -15,5 +15,5 @@ interface MembershipService {
     fun findMemberCard(memberId: Int): MemberCardResponseDto
     fun deleteMember(memberId: Int)
     fun updateMember(memberId: Int, updateMemberRequestDto: UpdateMemberRequestDto)
-    fun recentChecksInMembers(): Set<RecentMemberChecksInDto>
+    fun recentChecksInMembers(username: String?): Set<RecentMemberChecksInDto>
 }

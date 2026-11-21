@@ -86,7 +86,7 @@ public class MembershipController {
     public ResponseEntity<ApiResponse<Set<RecentMemberChecksInDto>, Void>> recentMembersChecksIn(
             Principal principal
     ) {
-        var recentChecks = membershipService.recentChecksInMembers();
+        var recentChecks = membershipService.recentChecksInMembers(principal.getName());
         return new ResponseEntity<>(new ApiResponse.Success<>(recentChecks), HttpStatus.OK);
     }
 
