@@ -15,11 +15,12 @@ public interface MemberAttendanceRepository extends JpaRepository<MemberAttendan
 
     @Query(
             value = """
-                    select ma.checkDate = current_date()
-                                        from MemberAttendance ma
-                                        where ma.member.id = :memberId
-                                        order by ma.checkDate desc
-                                        limit 1
+                    select exists(
+                    select 1
+                    from MemberAttendance ma
+                    where ma.member.id = :memberId
+                    and ma.checkDate = current_date
+                    ) as isChecked
                     """
     )
     boolean isMemberChecked(@Param(value = "memberId") int memberId);

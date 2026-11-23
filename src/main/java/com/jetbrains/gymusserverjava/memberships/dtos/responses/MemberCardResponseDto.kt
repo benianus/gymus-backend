@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDate
 
 data class MemberCardResponseDto(
-    val id: Int,
+    @JsonProperty("member_card_id")
+    val memberCardId: Int,
+    @JsonProperty("member_id")
+    val memberId: Int,
     @JsonProperty("first_name")
     val firstName: String,
     @JsonProperty("last_name")
@@ -12,7 +15,6 @@ data class MemberCardResponseDto(
     val birthdate: LocalDate,
     @JsonProperty("join_date")
     val joinDate: LocalDate,
-
     @JsonProperty("start_date")
     val startDate: LocalDate,
     @JsonProperty("end_date")
@@ -20,7 +22,9 @@ data class MemberCardResponseDto(
     @JsonProperty("personal_photo")
     val personalPhoto: String,
     @JsonProperty("check_date")
-    val checkDate: LocalDate?
+    val checkDate: LocalDate?,
+    @JsonProperty("last_renewal")
+    val lastRenewal: LocalDate?
 ) {
     val isActive: Boolean
         get() = endDate.isAfter(LocalDate.now())

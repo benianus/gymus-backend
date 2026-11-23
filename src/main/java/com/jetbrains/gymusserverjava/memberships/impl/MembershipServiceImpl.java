@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import static com.jetbrains.shared.utils.HelpersKt.getUserDetails;
@@ -108,7 +109,7 @@ public class MembershipServiceImpl implements MembershipService {
 
     @Override
     @Transactional
-    @PreAuthorize("@securityUtils.isMemberOwner(#memberid)")
+    @PreAuthorize("@securityUtils.isMemberOwner(#memberId)")
     public void recordAttendance(int memberId) {
         var isChecked = memberAttendanceRepository.isMemberChecked(memberId);
 
@@ -136,6 +137,7 @@ public class MembershipServiceImpl implements MembershipService {
     }
 
     @Override
+    @Transactional
     @PreAuthorize("@securityUtils.isMemberOwner(#memberId)")
     public void renewMembership(int memberId) {
         var membershipFounded = membershipRepository.findByMemberId(memberId)
@@ -146,9 +148,10 @@ public class MembershipServiceImpl implements MembershipService {
             throw CustomExceptionHandler.membershipAlreadyActive("membership already active");
         }
 
-        // renew membership in the memberships table
+        // update & renew membership in the memberships table
         membershipFounded.setStartDate(LocalDate.now());
         membershipFounded.setEndDate(LocalDate.now().plusDays(30));
+        membershipFounded.setUpdatedAt(LocalDateTime.now());
         membershipRepository.save(membershipFounded);
 
         // register the renewal in renewal memberships table
@@ -164,6 +167,7 @@ public class MembershipServiceImpl implements MembershipService {
                                          "user not found"));
 
         membershipRenewal.setMember(member);
+        membershipRenewal.setMembership(membershipFounded);
         membershipRenewal.setUser(user);
 
         membershipRenewalRepository.save(membershipRenewal);

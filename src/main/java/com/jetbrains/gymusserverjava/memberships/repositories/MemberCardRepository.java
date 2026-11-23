@@ -14,7 +14,8 @@ public interface MemberCardRepository extends JpaRepository<MemberCard, Integer>
 
     @Query(
             value = """
-                    select mc.id,
+                    select mc.id as memberCardId,
+                           m.id as memberId,
                            m.firstName,
                            m.lastName,
                            m.birthdate,
@@ -26,12 +27,17 @@ public interface MemberCardRepository extends JpaRepository<MemberCard, Integer>
                             from MemberAttendance ma
                             where ma.member.id = :memberId
                             order by ma.checkDate desc
-                            limit 1) as checkDate
+                            limit 1) as checkDate,
+                            (select mr.renewalDate
+                            from MembershipRenewal mr
+                            where mr.member.id = :memberId
+                            order by mr.renewalDate desc
+                            limit 1) as lastRenewal
                     from Member m
                     join MemberCard mc on mc.member.id = m.id
                     join Membership ms on ms.member.id = m.id
                     join MemberDocument md on md.member.id = m.id
-                    where mc.member.id = :memberId
+                    where m.id = :memberId
                     """
     )
     Optional<MemberCardResponseDto> findMemberCard(@Param(value = "memberId") int memberId);

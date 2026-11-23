@@ -1,6 +1,7 @@
 package com.jetbrains.shared.security
 
 import com.jetbrains.shared.enums.Role
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -84,8 +85,22 @@ class SecurityConfig(
             }
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
             .authenticationManager(authenticationManager(http))
-            .build()
+            .exceptionHandling {
+                it.authenticationEntryPoint { _, response, _ ->
+                    response.sendError(
+                        HttpServletResponse.SC_UNAUTHORIZED,
+                        "invalid token!"
+                    )
+                }
 
+                it.accessDeniedHandler { _, response, _ ->
+                    response.sendError(
+                        HttpServletResponse.SC_FORBIDDEN,
+                        "access denied!"
+                    )
+                }
+            }
+            .build()
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()

@@ -82,7 +82,7 @@ class GlobalExceptions {
     ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
             Error(ErrorResponseDto("${e.message}, You are not authorized to perform this action")),
-            HttpStatus.FORBIDDEN
+            HttpStatus.UNAUTHORIZED
         )
 
     @ExceptionHandler(BadCredentialsException::class)
@@ -100,7 +100,7 @@ class GlobalExceptions {
     ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> {
         return ResponseEntity(
             Error(ErrorResponseDto("${e.message}")),
-            HttpStatus.FORBIDDEN
+            HttpStatus.UNAUTHORIZED
         )
     }
 }
