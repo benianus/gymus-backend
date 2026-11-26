@@ -11,4 +11,5 @@ public class GymusServerJavaApplication {
     static void main(String[] args) {
         SpringApplication.run(GymusServerJavaApplication.class, args);
     }
+
 }

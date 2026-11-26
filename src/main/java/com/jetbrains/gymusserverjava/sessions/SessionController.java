@@ -37,11 +37,14 @@ public class SessionController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void, Void>> registerSession(
+    public ResponseEntity<ApiResponse<String, Void>> registerSession(
             @RequestBody @Valid RegisterSessionRequestDto registerSessionRequestDto
     ) {
         sessionService.registerSession(registerSessionRequestDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                new ApiResponse.Success<>("session registered successfully!"),
+                HttpStatus.CREATED
+        );
     }
 
 }

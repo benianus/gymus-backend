@@ -33,9 +33,7 @@ public class MembershipController {
             Principal principal
     ) {
         var members = membershipService.findAllMembers(pageNumber, pageSize, principal.getName());
-
         var pagedResponse = getPagedResponse(members);
-
         return new ResponseEntity<>(new ApiResponse.Success<>(pagedResponse), HttpStatus.OK);
     }
 
@@ -44,42 +42,57 @@ public class MembershipController {
             @PathVariable int memberId
     ) {
         var memberCard = membershipService.findMemberCard(memberId);
-        return ResponseEntity.ok().body(new ApiResponse.Success<>(memberCard));
+        return new ResponseEntity<>(new ApiResponse.Success<>(memberCard), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void, Void>> registerMember(
+    public ResponseEntity<ApiResponse<String, Void>> registerMember(
             @ModelAttribute @Valid RegisterMemberRequestDto dto
     ) {
         membershipService.registerMember(dto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                new ApiResponse.Success<>("member registered successfully!"),
+                HttpStatus.CREATED
+        );
     }
 
     @PostMapping("record/{memberId}/attendance")
-    public ResponseEntity<ApiResponse<Void, Void>> recordAttendance(@PathVariable int memberId) {
+    public ResponseEntity<ApiResponse<String, Void>> recordAttendance(@PathVariable int memberId) {
         membershipService.recordAttendance(memberId);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                new ApiResponse.Success<>("member checks-in successfully!"),
+                HttpStatus.CREATED
+        );
     }
 
     @PostMapping("{memberId}/renew")
-    public ResponseEntity<ApiResponse<Void, Void>> renewMembership(@PathVariable int memberId) {
+    public ResponseEntity<ApiResponse<String, Void>> renewMembership(@PathVariable int memberId) {
         membershipService.renewMembership(memberId);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                new ApiResponse.Success<>("membership renewed successfully!"),
+                HttpStatus.CREATED
+        );
     }
 
     @PutMapping("{memberId}")
-    public ResponseEntity<ApiResponse<Void, Void>> updateMember(
+    public ResponseEntity<ApiResponse<String, Void>> updateMember(
             @PathVariable int memberId,
             @RequestBody @Valid UpdateMemberRequestDto updateMemberRequestDto
     ) {
         membershipService.updateMember(memberId, updateMemberRequestDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                new ApiResponse.Success<>("member updated successfully!"),
+                HttpStatus.NO_CONTENT
+        );
     }
 
     @DeleteMapping("{memberId}")
-    public ResponseEntity<ApiResponse<Void, Void>> deleteMember(@PathVariable int memberId) {
+    public ResponseEntity<ApiResponse<String, Void>> deleteMember(@PathVariable int memberId) {
         membershipService.deleteMember(memberId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(
+                new ApiResponse.Success<>("member deleted successfully!"),
+                HttpStatus.NO_CONTENT
+        );
     }
 
     @GetMapping("recent-checks")

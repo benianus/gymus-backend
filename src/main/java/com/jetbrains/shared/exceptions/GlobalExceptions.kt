@@ -90,7 +90,7 @@ class GlobalExceptions {
         e: BadCredentialsException
     ): ResponseEntity<ApiResponse<Unit, ErrorResponseDto>> =
         ResponseEntity(
-            Error(ErrorResponseDto("${e.message} or invalid!")),
+            Error(ErrorResponseDto("${e.message}")),
             HttpStatus.BAD_REQUEST
         )
 

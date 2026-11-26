@@ -244,7 +244,6 @@ public class MembershipServiceImpl implements MembershipService {
         memberDocumentRepository.save(memberDocuments);
     }
 
-
     @Override public @NotNull Set<RecentMemberChecksInDto> recentChecksInMembers(String username) {
         return memberAttendanceRepository.getRecentChecksInMembers(username);
     }

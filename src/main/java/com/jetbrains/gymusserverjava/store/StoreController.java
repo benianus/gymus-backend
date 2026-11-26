@@ -44,35 +44,47 @@ public class StoreController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void, Void>> save(
+    public ResponseEntity<ApiResponse<String, Void>> save(
             @ModelAttribute @Valid CreateProductRequestDto requestDto
     ) {
         storeService.save(requestDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                new ApiResponse.Success<>("product created successfully!"),
+                HttpStatus.CREATED
+        );
     }
 
     @PutMapping("{productId}")
-    public ResponseEntity<ApiResponse<ProductResponseDto, Void>> update(
+    public ResponseEntity<ApiResponse<String, Void>> update(
             @ModelAttribute @Valid UpdateProductRequestDto dto,
             @PathVariable int productId
     ) {
         storeService.update(dto, productId);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(
+                new ApiResponse.Success<>("product updated successfully!"),
+                HttpStatus.NO_CONTENT
+        );
     }
 
     @DeleteMapping("{productId}")
-    public ResponseEntity<ApiResponse<Void, Void>> delete(@PathVariable int productId) {
+    public ResponseEntity<ApiResponse<String, Void>> delete(@PathVariable int productId) {
         storeService.delete(productId);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(
+                new ApiResponse.Success<>("product deleted successfully!"),
+                HttpStatus.NO_CONTENT
+        );
     }
 
     @PostMapping("{productId}/sales")
-    public ResponseEntity<ApiResponse<Void, Void>> registerSale(
+    public ResponseEntity<ApiResponse<String, Void>> registerSale(
             @Valid @RequestBody RegisterSaleRequestDto requestDto,
             @PathVariable int productId
     ) {
         storeService.registerSale(requestDto, productId);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                new ApiResponse.Success<>("sale registered successfully!"),
+                HttpStatus.CREATED
+        );
     }
 
 }
